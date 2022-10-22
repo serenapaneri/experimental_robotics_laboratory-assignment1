@@ -32,10 +32,10 @@ def main():
     reasoner()
     # disjoint the individuals of all the classes
     disjoint_individuals()
-    # save the new modified ontology
     
     all_hypotheses()
-    load_hypotheses()
+    
+    # save the new modified ontology
     save()
     
     try:
@@ -150,23 +150,23 @@ def all_hypotheses():
     
     # complete and consistent hypotheses
     hypotheses[0].append(random.choice(people))
-    hypotheses[0].append(random.choice(places))
     hypotheses[0].append(random.choice(weapons))
+    hypotheses[0].append(random.choice(places))
     hypotheses[0].append('0000')
      
     hypotheses[1].append(random.choice(people))
-    hypotheses[1].append(random.choice(places))
     hypotheses[1].append(random.choice(weapons))
+    hypotheses[1].append(random.choice(places))
     hypotheses[1].append('0001')
     
     hypotheses[2].append(random.choice(people))
-    hypotheses[2].append(random.choice(places))
     hypotheses[2].append(random.choice(weapons))
+    hypotheses[2].append(random.choice(places))
     hypotheses[2].append('0002')
      
     hypotheses[3].append(random.choice(people))
-    hypotheses[3].append(random.choice(places))
     hypotheses[3].append(random.choice(weapons))
+    hypotheses[3].append(random.choice(places))
     hypotheses[3].append('0003')
     
     # uncomplete hypotheses 
@@ -175,9 +175,9 @@ def all_hypotheses():
     hypotheses[4].append(random.choice(places))
     hypotheses[4].append('0004')
     
-    hypotheses[5].append(random.choice(places))
-    hypotheses[5].append(random.choice(places))
     hypotheses[5].append(random.choice(weapons))
+    hypotheses[5].append(random.choice(places))
+    hypotheses[5].append(random.choice(places))
     hypotheses[5].append('0005')
     
     hypotheses[6].append(random.choice(people))
@@ -187,44 +187,87 @@ def all_hypotheses():
      
     # inconsistent hypotheses
     hypotheses[7].append(random.choice(people))
+    hypotheses[7].append(random.choice(weapons))
+    hypotheses[7].append(random.choice(weapons))
     hypotheses[7].append(random.choice(places))
-    hypotheses[7].append(random.choice(weapons))
-    hypotheses[7].append(random.choice(weapons))
     hypotheses[7].append('0007')
     
     hypotheses[8].append(random.choice(people))
-    hypotheses[8].append(random.choice(places))
-    hypotheses[8].append(random.choice(places))
     hypotheses[8].append(random.choice(weapons))
+    hypotheses[8].append(random.choice(places))
+    hypotheses[8].append(random.choice(places))
     hypotheses[8].append('0008')
     
     hypotheses[9].append(random.choice(people))
     hypotheses[9].append(random.choice(people))
     hypotheses[9].append(random.choice(people))
-    hypotheses[9].append(random.choice(places))
-    hypotheses[9].append(random.choice(places))
     hypotheses[9].append(random.choice(weapons))
+    hypotheses[9].append(random.choice(places))
+    hypotheses[9].append(random.choice(places))
     hypotheses[9].append('0009')
     
     for i in range(4):
         feasible_hypotheses.append(hypotheses[i])
     
     # select randomly the winning hypothesis
-    n = randint(0, len(feasible_hypotheses))
+    n = randint(0, len(feasible_hypotheses)-1)
     winning_hypothesis.append(feasible_hypotheses[n])
+    print('The winning hypothesis is:')
+    print("{} with the {} in the {}".format(winning_hypothesis[0][0], winning_hypothesis[0][1], winning_hypothesis[0][2]))
+    load_winning_hypothesis(winning_hypothesis)
     
-    return hypotheses, feasible_hypotheses, winning_hypothesis
+    return 
     
-def load_hypotheses():
+def load_winning_hypothesis(win):
     req = ArmorDirectiveReq()
     req.client_name = 'menage_ontology'
     req.reference_name = 'cluedontology'
     req.command = 'ADD'
     req.primary_command_spec = 'IND'
     req.secondary_command_spec = 'CLASS'
-    req.args = ['hypotheses', 'HYPOTHESIS']
+    req.args = ['Winning hypothesis', 'HYPOTHESIS']
+    # [name that you want to give, cathegory on the ontology]
     res = armor_interface(req)
-    print("All the hypotheses of the game have been uploaded")
+    
+    req.command = 'ADD'
+    req.primary_command_spec = 'OBJECTPROP'
+    req.secondary_command_spec = 'IND'
+    req.args = ['who','Winning hypothesis', winning_hypothesis[0][0]]
+    res = armor_interface(req)
+    
+    req.command = 'ADD'
+    req.primary_command_spec = 'OBJECTPROP'
+    req.secondary_command_spec = 'IND'
+    req.args = ['what','Winning hypothesis', winning_hypothesis[0][1]]
+    res = armor_interface(req)
+    
+    req.command = 'ADD'
+    req.primary_command_spec = 'OBJECTPROP'
+    req.secondary_command_spec = 'IND'
+    req.args = ['where','Winning hypothesis', winning_hypothesis[0][2]]
+    res = armor_interface(req)
+    
+    print("The solution of the game has been uploaded")
+    
+def complete():
+    req = ArmorDirectiveReq()
+    req.client_name = 'menage_ontology'
+    req.reference_name = 'cluedontology'
+    req.command = 'QUERY'
+    req.primary_command_spec = 'IND'
+    req.secondary_command_spec = 'CLASS'
+    req.args = ['COMPLETE']
+    res = armor_interface(req)
+    
+def inconsistent():
+    req = ArmorDirectiveReq()
+    req.client_name = 'menage_ontology'
+    req.reference_name = 'cluedontology'
+    req.command = 'QUERY'
+    req.primary_command_spec = 'IND'
+    req.secondary_command_spec = 'CLASS'
+    req.args = ['INCONSISTENT']
+    res = armor_interface(req)
     
 
 
