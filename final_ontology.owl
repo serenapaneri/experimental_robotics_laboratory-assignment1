@@ -316,6 +316,26 @@
     
 
 
+    <!-- http://www.emarolab.it/cluedo-ontology#Winning_hypothesis -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.emarolab.it/cluedo-ontology#Winning_hypothesis">
+        <rdf:type rdf:resource="http://www.emarolab.it/cluedo-ontology#HYPOTHESIS"/>
+        <what rdf:resource="http://www.emarolab.it/cluedo-ontology#Dagger"/>
+        <what rdf:resource="http://www.emarolab.it/cluedo-ontology#Revolver"/>
+        <what rdf:resource="http://www.emarolab.it/cluedo-ontology#Rope"/>
+        <what rdf:resource="http://www.emarolab.it/cluedo-ontology#Spanner"/>
+        <where rdf:resource="http://www.emarolab.it/cluedo-ontology#Hall"/>
+        <where rdf:resource="http://www.emarolab.it/cluedo-ontology#Library"/>
+        <where rdf:resource="http://www.emarolab.it/cluedo-ontology#Dining room"/>
+        <who rdf:resource="http://www.emarolab.it/cluedo-ontology#Col. Mustard"/>
+        <who rdf:resource="http://www.emarolab.it/cluedo-ontology#Mrs. White"/>
+        <who rdf:resource="http://www.emarolab.it/cluedo-ontology#Msr. Peacock"/>
+        <who rdf:resource="http://www.emarolab.it/cluedo-ontology#Prof. Plum"/>
+    </owl:NamedIndividual>
+    
+
+
     <!-- http://www.emarolab.it/cluedo-ontology#Billiard room -->
 
 

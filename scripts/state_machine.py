@@ -5,9 +5,12 @@ import random
 import smach
 import smach_ros
 import time
+from armor_msgs.srv import * 
+from armor_msgs.msg import * 
 from exprob_ass1.msg import Hint
+from exprob_ass1.srv import Hypothesis
 
-
+hints = None
 
 def room_choice():
     rooms_list = ['Conservatory', 'Lounge', 'Kitchen', 'Library', 'Hall', 'Study', 'Ballroom', 'Dining Room', 'Billiard Room'] 
@@ -26,35 +29,37 @@ class Motion(smach.State):
     # is consistent then it should go to the oracle testing his hypothesis 
     def __init__(self):
         smach.State.__init__(self, 
-                             outcomes=['enter_room','go_oracle'],
-                             input_keys=['enter'],
-                             output_keys=['exit'])
+                             outcomes=['enter_room','go_oracle'])
         
     def execute(self, userdata):
         random_room = room_choice()
         
-        if hints>3:
-            rospy.loginfo('The robot is going into the ' %random_room)
+        if len(hints) < 3: # implement a counter
+            print("The robot is going to the {}".format(random_room))
             time.sleep(5) # simulated time to reach a room
-        return 'enter_room'
+            return 'enter_room'
         else:
-        return 'go_oracle'
+            # here check also if it is complete and consistent
+            # also after having a feasible hypothesis go to the oracle
+            return 'go_oracle'
         
         
-class RoomIn(smach.State):
+class Room(smach.State):
     # this class should simulates what happens when the robot enters in a room searching for
     # hints. 
     def __init__(self):
         # initialisation function, it should not wait
         smach.State.__init__(self, 
-                             outcomes=['hints'])
+                             outcomes=['motion'])
         
     def execute(self, userdata):
-        # function called when exiting from the node, it can be blacking
-        time.sleep(5)
-        rospy.loginfo('Executing state UNLOCKED (users = %f)'%userdata.unlocked_counter_in)
-        userdata.unlocked_counter_out = userdata.unlocked_counter_in + 1
-        return 'hint'
+        print("The robot is looking for hints")
+        
+        # here the should be the hint subscriber and the counter
+        # for the hints recieved
+
+        
+        return 'motion'
         
 class Oracle(smach.State):
     # this class should simulate what happens when the robot has already collect 3 hints
@@ -64,36 +69,45 @@ class Oracle(smach.State):
     # game restart and the robot should searching for the correct hinst again.  
     def __init__(self):
         smach.State.__init__(self, 
-                             outcomes=['coorect_hypothesis','wrong_hypothesis'])
+                             outcomes=['motion','game_finished'])
         
     def execute(self, userdata):
         
         time.sleep(5)
         rospy.loginfo('Executing state UNLOCKED (users = %f)'%userdata.unlocked_counter_in)
         userdata.unlocked_counter_out = userdata.unlocked_counter_in + 1
-        return 'correct hypothesis'
+        return 'game_finished'
         
-        return 'wrong hypothesis' 
+        return 'motion' 
         
         
 def main():
     rospy.init('state_machine')
-    sm = smach.StateMachine(outcomes=['GAME_FINISHED'])
+    sm = smach.StateMachine(outcomes=['game_finished'])
+    
+    rospy.wait_for_service('armor_interface_srv')
+    print('Waiting for the armor service')
+    rospy.wait_for_service('menage_ontology')
+    print('Waiting for the ontology service')
+    rospy.wait_for_service('hints')
+    print('Waiting for the hint service')
+    
+    armor_interface = rospy.ServiceProxy('armor_interface_srv', ArmorDirective)
+    hypothesis_client = rospy.ServiceProxy('hypothesis_srv', Hypothesis)
 
     with sm:
-        smach.StateMachine.add('MOTION', Motion(), 
-                               transitions={'enter_room':'RoomIn', 
-                                            'go_oracle':'ORACLE'})
-        smach.StateMachine.add('ROOMIN', RoomIn(), 
-                               transitions={'hint':'LOCKED', 
-                                            'coin':'UNLOCKED'})
+        smach.StateMachine.add('Motion', Motion(), 
+                               transitions={'enter_room':'Room', 
+                                            'go_oracle':'Oracle'})
+        smach.StateMachine.add('Room', Room(), 
+                               transitions={'motion':'Motion'})
         smach.StateMachine.add('ORACLE', Oracle(), 
-                               transitions={'wrong_':'', 
-                                            'go_oracle':'ORACLE'})
+                               transitions={'motion':'Motion', 
+                                            'game_finished':'game_finished'})
 
 
     # Create and start the introspection server for visualization
-    sis = smach_ros.IntrospectionServer('server_name', sm, '/SM_ROOT')
+    sis = smach_ros.IntrospectionServer('state_machine', sm, '/SM_ROOT')
     sis.start()
 
     # Execute the state machine
@@ -103,8 +117,19 @@ def main():
     rospy.spin()
     sis.stop()
     
-        
+if __name__ == '__main__':
+    main()
     
+
+
+
+
+
+
+
+
+
+
 
 class Unlocked(smach.State):
     def __init__(self):
@@ -176,7 +201,3 @@ def main():
     # Wait for ctrl-c to stop the application
     rospy.spin()
     sis.stop()
-
-
-if __name__ == '__main__':
-    main()

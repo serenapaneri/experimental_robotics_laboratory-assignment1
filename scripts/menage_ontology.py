@@ -2,7 +2,6 @@
 
 import rospy
 import random
-import numpy as np
 from random import randint
 from armor_msgs.srv import *
 from armor_msgs.msg import * 
@@ -16,10 +15,13 @@ ID = ['0000', '0001', '0002', '0003', '0004', '0005', '0006', '0007', '0008', '0
 hypotheses = []
 feasible_hypotheses = []
 winning_hypothesis = []
+armor_interface = None
+# pub = None
 
 def main():
     global armor_interface
     rospy.init_node('menage_ontology')
+    
     rospy.wait_for_service('armor_interface_srv')
     print('Waiting for the armor service')
     armor_interface = rospy.ServiceProxy('armor_interface_srv', ArmorDirective)
@@ -33,10 +35,12 @@ def main():
     # disjoint the individuals of all the classes
     disjoint_individuals()
     
-    all_hypotheses()
+    winning_hypo()
     
     # save the new modified ontology
     save()
+    
+    # hypothesis_service = rospy.Service('hypothesis_srv', Hypothesis, all_hypotheses)
     
     try:
         rospy.spin()
@@ -205,18 +209,23 @@ def all_hypotheses():
     hypotheses[9].append(random.choice(places))
     hypotheses[9].append(random.choice(places))
     hypotheses[9].append('0009')
+    return hypotheses
     
+def feasible_hypo():
+    hypo = all_hypotheses()
     for i in range(4):
-        feasible_hypotheses.append(hypotheses[i])
+        feasible_hypotheses.append(hypo[i])
+    return feasible_hypotheses
     
-    # select randomly the winning hypothesis
-    n = randint(0, len(feasible_hypotheses)-1)
-    winning_hypothesis.append(feasible_hypotheses[n])
+def winning_hypo():
+    feas_hypo = feasible_hypo()
+    n = randint(0, len(feas_hypo)-1)
+    winning_hypothesis.append(feas_hypo[n])
     print('The winning hypothesis is:')
     print("{} with the {} in the {}".format(winning_hypothesis[0][0], winning_hypothesis[0][1], winning_hypothesis[0][2]))
     load_winning_hypothesis(winning_hypothesis)
-    
-    return 
+    return winning_hypothesis
+       
     
 def load_winning_hypothesis(win):
     req = ArmorDirectiveReq()
@@ -225,27 +234,30 @@ def load_winning_hypothesis(win):
     req.command = 'ADD'
     req.primary_command_spec = 'IND'
     req.secondary_command_spec = 'CLASS'
-    req.args = ['Winning hypothesis', 'HYPOTHESIS']
+    req.args = ['Winning_hypothesis', 'HYPOTHESIS']
     # [name that you want to give, cathegory on the ontology]
+    msg = armor_interface(req)
+    res = msg.armor_response
+    
+    req.command = 'ADD'
+    req.primary_command_spec = 'OBJECTPROP'
+    req.secondary_command_spec = 'IND'
+    req.args = ['who','Winning_hypothesis', winning_hypothesis[0][0]]
+    msg = armor_interface(req)
+    res = msg.armor_response 
+    
+    req.command = 'ADD'
+    req.primary_command_spec = 'OBJECTPROP'
+    req.secondary_command_spec = 'IND'
+    req.args = ['what','Winning_hypothesis', winning_hypothesis[0][1]]
     res = armor_interface(req)
     
     req.command = 'ADD'
     req.primary_command_spec = 'OBJECTPROP'
     req.secondary_command_spec = 'IND'
-    req.args = ['who','Winning hypothesis', winning_hypothesis[0][0]]
-    res = armor_interface(req)
-    
-    req.command = 'ADD'
-    req.primary_command_spec = 'OBJECTPROP'
-    req.secondary_command_spec = 'IND'
-    req.args = ['what','Winning hypothesis', winning_hypothesis[0][1]]
-    res = armor_interface(req)
-    
-    req.command = 'ADD'
-    req.primary_command_spec = 'OBJECTPROP'
-    req.secondary_command_spec = 'IND'
-    req.args = ['where','Winning hypothesis', winning_hypothesis[0][2]]
-    res = armor_interface(req)
+    req.args = ['where','Winning_hypothesis', winning_hypothesis[0][2]]
+    msg = armor_interface(req)
+    res = msg.armor_response 
     
     print("The solution of the game has been uploaded")
     
@@ -257,7 +269,8 @@ def complete():
     req.primary_command_spec = 'IND'
     req.secondary_command_spec = 'CLASS'
     req.args = ['COMPLETE']
-    res = armor_interface(req)
+    msg = armor_interface(req)
+    res = msg.armor_response 
     
 def inconsistent():
     req = ArmorDirectiveReq()
@@ -267,8 +280,8 @@ def inconsistent():
     req.primary_command_spec = 'IND'
     req.secondary_command_spec = 'CLASS'
     req.args = ['INCONSISTENT']
-    res = armor_interface(req)
-    
+    msg = armor_interface(req)
+    res = msg.armor_response 
 
 
 if __name__ == '__main__':
