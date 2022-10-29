@@ -51,12 +51,12 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
    FILES
    Hint.msg
+   Hypothesis.msg
 )
 
 ## Generate services in the 'srv' folder
 add_service_files(
    FILES
-   Hypothesis.srv
    Oracle.srv
 )
 

@@ -321,17 +321,27 @@
 
     <owl:NamedIndividual rdf:about="http://www.emarolab.it/cluedo-ontology#Winning_hypothesis">
         <rdf:type rdf:resource="http://www.emarolab.it/cluedo-ontology#HYPOTHESIS"/>
+        <what rdf:resource="http://www.emarolab.it/cluedo-ontology#Candlestick"/>
         <what rdf:resource="http://www.emarolab.it/cluedo-ontology#Dagger"/>
         <what rdf:resource="http://www.emarolab.it/cluedo-ontology#Revolver"/>
         <what rdf:resource="http://www.emarolab.it/cluedo-ontology#Rope"/>
         <what rdf:resource="http://www.emarolab.it/cluedo-ontology#Spanner"/>
+        <what rdf:resource="http://www.emarolab.it/cluedo-ontology#Lead Pipe"/>
+        <where rdf:resource="http://www.emarolab.it/cluedo-ontology#Ballroom"/>
+        <where rdf:resource="http://www.emarolab.it/cluedo-ontology#Conservatory"/>
         <where rdf:resource="http://www.emarolab.it/cluedo-ontology#Hall"/>
+        <where rdf:resource="http://www.emarolab.it/cluedo-ontology#Kitchen"/>
         <where rdf:resource="http://www.emarolab.it/cluedo-ontology#Library"/>
+        <where rdf:resource="http://www.emarolab.it/cluedo-ontology#Lounge"/>
+        <where rdf:resource="http://www.emarolab.it/cluedo-ontology#Study"/>
+        <where rdf:resource="http://www.emarolab.it/cluedo-ontology#Billiard room"/>
         <where rdf:resource="http://www.emarolab.it/cluedo-ontology#Dining room"/>
         <who rdf:resource="http://www.emarolab.it/cluedo-ontology#Col. Mustard"/>
+        <who rdf:resource="http://www.emarolab.it/cluedo-ontology#Miss. Scarlett"/>
         <who rdf:resource="http://www.emarolab.it/cluedo-ontology#Mrs. White"/>
         <who rdf:resource="http://www.emarolab.it/cluedo-ontology#Msr. Peacock"/>
         <who rdf:resource="http://www.emarolab.it/cluedo-ontology#Prof. Plum"/>
+        <who rdf:resource="http://www.emarolab.it/cluedo-ontology#Rev. Green"/>
     </owl:NamedIndividual>
     
 

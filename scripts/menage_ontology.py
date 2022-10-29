@@ -1,11 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 import rospy
 import random
 from random import randint
 from armor_msgs.srv import *
 from armor_msgs.msg import * 
-from exprob_ass1.srv import Hypothesis
+# from exprob_ass1.srv import Winhypothesis, WinhypothesisResponse
 
 people = ['Rev. Green', 'Prof. Plum', 'Col. Mustard','Msr. Peacock', 'Miss. Scarlett', 'Mrs. White']
 weapons = ['Candlestick', 'Dagger', 'Lead Pipe', 'Revolver', 'Rope', 'Spanner']
@@ -16,7 +16,7 @@ hypotheses = []
 feasible_hypotheses = []
 winning_hypothesis = []
 armor_interface = None
-# pub = None
+hint = []
 
 def main():
     global armor_interface
@@ -37,10 +37,13 @@ def main():
     
     winning_hypo()
     
+    gen_hints()
+    
     # save the new modified ontology
     save()
     
-    # hypothesis_service = rospy.Service('hypothesis_srv', Hypothesis, all_hypotheses)
+    # hypotheses_service = rospy.Service('hypothesis_srv', Hypothesis, hypothesis_handle)
+    # winning_hypothesis_service = rospy.Service('winning_hypothesis_srv', Winhypothesis, winning_hypo)
     
     try:
         rospy.spin()
@@ -49,6 +52,9 @@ def main():
 
 
 def load():
+    """
+      This function is used to load the ontology
+    """
     req = ArmorDirectiveReq()
     req.client_name = 'menage_ontology'
     req.reference_name = 'cluedontology'
@@ -61,6 +67,9 @@ def load():
 
 
 def tbox():
+    """
+      This function is used to load all the individuals of all classes in the ontology
+    """
     global people, weapons, places
     req = ArmorDirectiveReq()
     req.client_name = 'menage_ontology'
@@ -93,7 +102,7 @@ def tbox():
 
 def disjoint_individuals():
     """
-      This operation need to be done in order to disjoint the individuals
+      This operation needs to be done in order to disjoint the individuals
       from each other 
     """
     req = ArmorDirectiveReq()
@@ -114,7 +123,14 @@ def disjoint_individuals():
     msg = armor_interface(req)
     res = msg.armor_response
     print('The individuals of the class PLACE have been disjoint')
-
+    
+def onto_class(wh):
+    if wh == 'who':
+        return 'PERSON'
+    elif wh == 'what':
+        return 'WEAPON'
+    elif wh == 'where':
+        return 'PLACE'
 
 def reasoner():
     req = ArmorDirectiveReq()
@@ -138,18 +154,31 @@ def save():
     res = msg.armor_response
     print('The new ontology has been saved under the name final_ontology.owl')
     
-def search(list_):
-    result = any(item in list_ for item in ID)
+def search(list1, list2):
+    """
+      This function is used to check if the element in the list2 are present or
+      not in the list1
+    """
+    result = any(item in list1 for item in list2)
     if result:
         return True
-    return False
+    else:
+        return False
     
 def list_index(list1, list2):
-      index = [i for i,item in enumerate(list1) if item in list2]
-      return index
+    """
+      This function is used to search the elements of a list2 in a list1 and
+      return their indexes
+    """
+    check = search(list1, list2)
+    if check == True:
+        index = [i for i,item in enumerate(list1) if item in list2]
+        return index
+    else:
+        return []
+          
     
 def all_hypotheses():
-
     hypotheses = [[] for _ in range(10)]
     
     # complete and consistent hypotheses
@@ -225,7 +254,16 @@ def winning_hypo():
     print("{} with the {} in the {}".format(winning_hypothesis[0][0], winning_hypothesis[0][1], winning_hypothesis[0][2]))
     load_winning_hypothesis(winning_hypothesis)
     return winning_hypothesis
-       
+
+def flatten(list_):
+    flat_list = []
+    for element in list_:
+        if type(element) is list:
+            for item in element:
+                flat_list.append(item)
+        else:
+            flat_list.append(element)
+    return flat_list        
     
 def load_winning_hypothesis(win):
     req = ArmorDirectiveReq()
@@ -282,6 +320,39 @@ def inconsistent():
     req.args = ['INCONSISTENT']
     msg = armor_interface(req)
     res = msg.armor_response 
+    
+def gen_hints():
+    random_hypo = []
+    hypo = all_hypotheses()
+    random_hypo.append(random.choice(hypo[:]))
+    print(random_hypo)
+    flat_hypo = flatten(random_hypo)
+    # extracting all the indexes (if they exist)
+    people_index = list_index(flat_hypo, people)
+    weapons_index = list_index(flat_hypo, weapons)
+    places_index = list_index(flat_hypo, places)
+    id_index = list_index(flat_hypo, ID)
+    hints = [[] for _ in range(len(flat_hypo) - 1)]
+    print(people_index)
+    print(weapons_index)
+    print(places_index)
+    print(id_index)
+    i = 0
+    for item in id_index:
+        for a in people_index:
+            if people_index != []:
+                hints[i].append(flat_hypo[a])
+                hints[i].append(flat_hypo[item]) # questo fisso
+                for b in weapons_index:
+                    if weapons_index != []:
+                        hints[i + 1].append(flat_hypo[b])
+                        hints[i + 1].append(flat_hypo[item])
+                        for c in places_index:
+                            if places_index != []:
+                                hints[i + 2].append(flat_hypo[c])
+                                hints[2].append(flat_hypo[item])
+                                print(hints)
+
 
 
 if __name__ == '__main__':
