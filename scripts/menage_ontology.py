@@ -340,17 +340,19 @@ def gen_hints():
     i = 0
     for item in id_index:
         for a in people_index:
-            if people_index != []:
+            if people_index != [] and len(people_index) == 1:
                 hints[i].append(flat_hypo[a])
-                hints[i].append(flat_hypo[item]) # questo fisso
+                hints[i].append(flat_hypo[item])
+                i += 1
                 for b in weapons_index:
-                    if weapons_index != []:
-                        hints[i + 1].append(flat_hypo[b])
-                        hints[i + 1].append(flat_hypo[item])
+                    if weapons_index != [] and len(weapons_index) == 1:
+                        hints[i].append(flat_hypo[b])
+                        hints[i].append(flat_hypo[item])
+                        i += 1
                         for c in places_index:
-                            if places_index != []:
-                                hints[i + 2].append(flat_hypo[c])
-                                hints[2].append(flat_hypo[item])
+                            if places_index != [] and len(places_index) == 1:
+                                hints[i].append(flat_hypo[c])
+                                hints[i].append(flat_hypo[item])
                                 print(hints)
 
 
