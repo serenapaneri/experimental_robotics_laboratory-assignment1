@@ -5,17 +5,14 @@ import random
 from random import randint
 from armor_msgs.srv import *
 from armor_msgs.msg import * 
-# from exprob_ass1.srv import Winhypothesis, WinhypothesisResponse
 
 people = ['Rev. Green', 'Prof. Plum', 'Col. Mustard','Msr. Peacock', 'Miss. Scarlett', 'Mrs. White']
 weapons = ['Candlestick', 'Dagger', 'Lead Pipe', 'Revolver', 'Rope', 'Spanner']
 places = ['Conservatory', 'Lounge', 'Kitchen', 'Library', 'Hall', 'Study', 'Ballroom', 'Dining room', 'Billiard room']
 ID = ['0000', '0001', '0002', '0003', '0004', '0005', '0006', '0007', '0008', '0009']
 
-hypotheses = []
-feasible_hypotheses = []
-winning_hypothesis = []
 armor_interface = None
+hypotheses = []
 hint = []
 
 def main():
@@ -34,16 +31,8 @@ def main():
     reasoner()
     # disjoint the individuals of all the classes
     disjoint_individuals()
-    
-    winning_hypo()
-    
-    gen_hints()
-    
     # save the new modified ontology
     save()
-    
-    # hypotheses_service = rospy.Service('hypothesis_srv', Hypothesis, hypothesis_handle)
-    # winning_hypothesis_service = rospy.Service('winning_hypothesis_srv', Winhypothesis, winning_hypo)
     
     try:
         rospy.spin()
@@ -123,14 +112,6 @@ def disjoint_individuals():
     msg = armor_interface(req)
     res = msg.armor_response
     print('The individuals of the class PLACE have been disjoint')
-    
-def onto_class(wh):
-    if wh == 'who':
-        return 'PERSON'
-    elif wh == 'what':
-        return 'WEAPON'
-    elif wh == 'where':
-        return 'PLACE'
 
 def reasoner():
     req = ArmorDirectiveReq()
@@ -238,23 +219,10 @@ def all_hypotheses():
     hypotheses[9].append(random.choice(places))
     hypotheses[9].append(random.choice(places))
     hypotheses[9].append('0009')
+    
+    rospy.set_param('hypo', hypotheses)
     return hypotheses
     
-def feasible_hypo():
-    hypo = all_hypotheses()
-    for i in range(4):
-        feasible_hypotheses.append(hypo[i])
-    return feasible_hypotheses
-    
-def winning_hypo():
-    feas_hypo = feasible_hypo()
-    n = randint(0, len(feas_hypo)-1)
-    winning_hypothesis.append(feas_hypo[n])
-    print('The winning hypothesis is:')
-    print("{} with the {} in the {}".format(winning_hypothesis[0][0], winning_hypothesis[0][1], winning_hypothesis[0][2]))
-    load_winning_hypothesis(winning_hypothesis)
-    return winning_hypothesis
-
 def flatten(list_):
     flat_list = []
     for element in list_:
@@ -263,41 +231,7 @@ def flatten(list_):
                 flat_list.append(item)
         else:
             flat_list.append(element)
-    return flat_list        
-    
-def load_winning_hypothesis(win):
-    req = ArmorDirectiveReq()
-    req.client_name = 'menage_ontology'
-    req.reference_name = 'cluedontology'
-    req.command = 'ADD'
-    req.primary_command_spec = 'IND'
-    req.secondary_command_spec = 'CLASS'
-    req.args = ['Winning_hypothesis', 'HYPOTHESIS']
-    # [name that you want to give, cathegory on the ontology]
-    msg = armor_interface(req)
-    res = msg.armor_response
-    
-    req.command = 'ADD'
-    req.primary_command_spec = 'OBJECTPROP'
-    req.secondary_command_spec = 'IND'
-    req.args = ['who','Winning_hypothesis', winning_hypothesis[0][0]]
-    msg = armor_interface(req)
-    res = msg.armor_response 
-    
-    req.command = 'ADD'
-    req.primary_command_spec = 'OBJECTPROP'
-    req.secondary_command_spec = 'IND'
-    req.args = ['what','Winning_hypothesis', winning_hypothesis[0][1]]
-    res = armor_interface(req)
-    
-    req.command = 'ADD'
-    req.primary_command_spec = 'OBJECTPROP'
-    req.secondary_command_spec = 'IND'
-    req.args = ['where','Winning_hypothesis', winning_hypothesis[0][2]]
-    msg = armor_interface(req)
-    res = msg.armor_response 
-    
-    print("The solution of the game has been uploaded")
+    return flat_list
     
 def complete():
     req = ArmorDirectiveReq()
@@ -321,41 +255,6 @@ def inconsistent():
     msg = armor_interface(req)
     res = msg.armor_response 
     
-def gen_hints():
-    random_hypo = []
-    hypo = all_hypotheses()
-    random_hypo.append(random.choice(hypo[:]))
-    print(random_hypo)
-    flat_hypo = flatten(random_hypo)
-    # extracting all the indexes (if they exist)
-    people_index = list_index(flat_hypo, people)
-    weapons_index = list_index(flat_hypo, weapons)
-    places_index = list_index(flat_hypo, places)
-    id_index = list_index(flat_hypo, ID)
-    hints = [[] for _ in range(len(flat_hypo) - 1)]
-    print(people_index)
-    print(weapons_index)
-    print(places_index)
-    print(id_index)
-    i = 0
-    for item in id_index:
-        for a in people_index:
-            if people_index != [] and len(people_index) == 1:
-                hints[i].append(flat_hypo[a])
-                hints[i].append(flat_hypo[item])
-                i += 1
-                for b in weapons_index:
-                    if weapons_index != [] and len(weapons_index) == 1:
-                        hints[i].append(flat_hypo[b])
-                        hints[i].append(flat_hypo[item])
-                        i += 1
-                        for c in places_index:
-                            if places_index != [] and len(places_index) == 1:
-                                hints[i].append(flat_hypo[c])
-                                hints[i].append(flat_hypo[item])
-                                print(hints)
-
-
-
+    
 if __name__ == '__main__':
     main()

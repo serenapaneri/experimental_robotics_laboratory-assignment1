@@ -7,8 +7,7 @@ import smach_ros
 import time
 from armor_msgs.srv import * 
 from armor_msgs.msg import * 
-from exprob_ass1.msg import Hint
-from exprob_ass1.srv import Hypothesis
+# from exprob_ass1.msg import Hint
 
 hints = None
 
@@ -87,13 +86,10 @@ def main():
     
     rospy.wait_for_service('armor_interface_srv')
     print('Waiting for the armor service')
-    rospy.wait_for_service('menage_ontology')
-    print('Waiting for the ontology service')
-    rospy.wait_for_service('hints')
-    print('Waiting for the hint service')
+    # rospy.wait_for_service('hints')
+    # print('Waiting for the hint service')
     
     armor_interface = rospy.ServiceProxy('armor_interface_srv', ArmorDirective)
-    hypothesis_client = rospy.ServiceProxy('hypothesis_srv', Hypothesis)
 
     with sm:
         smach.StateMachine.add('Motion', Motion(), 
