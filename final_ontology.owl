@@ -316,23 +316,6 @@
     
 
 
-    <!-- http://www.emarolab.it/cluedo-ontology#Winning_hypothesis -->
-
-
-    <owl:NamedIndividual rdf:about="http://www.emarolab.it/cluedo-ontology#Winning_hypothesis">
-        <rdf:type rdf:resource="http://www.emarolab.it/cluedo-ontology#HYPOTHESIS"/>
-        <what rdf:resource="http://www.emarolab.it/cluedo-ontology#Candlestick"/>
-        <what rdf:resource="http://www.emarolab.it/cluedo-ontology#Spanner"/>
-        <what rdf:resource="http://www.emarolab.it/cluedo-ontology#Lead Pipe"/>
-        <where rdf:resource="http://www.emarolab.it/cluedo-ontology#Kitchen"/>
-        <where rdf:resource="http://www.emarolab.it/cluedo-ontology#Library"/>
-        <where rdf:resource="http://www.emarolab.it/cluedo-ontology#Lounge"/>
-        <who rdf:resource="http://www.emarolab.it/cluedo-ontology#Miss. Scarlett"/>
-        <who rdf:resource="http://www.emarolab.it/cluedo-ontology#Msr. Peacock"/>
-    </owl:NamedIndividual>
-    
-
-
     <!-- http://www.emarolab.it/cluedo-ontology#Billiard room -->
 
 

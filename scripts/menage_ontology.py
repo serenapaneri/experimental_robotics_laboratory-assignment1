@@ -11,9 +11,13 @@ weapons = ['Candlestick', 'Dagger', 'Lead Pipe', 'Revolver', 'Rope', 'Spanner']
 places = ['Conservatory', 'Lounge', 'Kitchen', 'Library', 'Hall', 'Study', 'Ballroom', 'Dining room', 'Billiard room']
 ID = ['0000', '0001', '0002', '0003', '0004', '0005', '0006', '0007', '0008', '0009']
 
+rospy.set_param('people', people)
+rospy.set_param('weapons', weapons)
+rospy.set_param('places', places)
+rospy.set_param('ID', ID)
+
 armor_interface = None
 hypotheses = []
-hint = []
 
 def main():
     global armor_interface
@@ -31,6 +35,9 @@ def main():
     reasoner()
     # disjoint the individuals of all the classes
     disjoint_individuals()
+    
+    all_hypotheses()
+    
     # save the new modified ontology
     save()
     
@@ -134,29 +141,6 @@ def save():
     msg = armor_interface(req)
     res = msg.armor_response
     print('The new ontology has been saved under the name final_ontology.owl')
-    
-def search(list1, list2):
-    """
-      This function is used to check if the element in the list2 are present or
-      not in the list1
-    """
-    result = any(item in list1 for item in list2)
-    if result:
-        return True
-    else:
-        return False
-    
-def list_index(list1, list2):
-    """
-      This function is used to search the elements of a list2 in a list1 and
-      return their indexes
-    """
-    check = search(list1, list2)
-    if check == True:
-        index = [i for i,item in enumerate(list1) if item in list2]
-        return index
-    else:
-        return []
           
     
 def all_hypotheses():
@@ -222,16 +206,6 @@ def all_hypotheses():
     
     rospy.set_param('hypo', hypotheses)
     return hypotheses
-    
-def flatten(list_):
-    flat_list = []
-    for element in list_:
-        if type(element) is list:
-            for item in element:
-                flat_list.append(item)
-        else:
-            flat_list.append(element)
-    return flat_list
     
 def complete():
     req = ArmorDirectiveReq()
