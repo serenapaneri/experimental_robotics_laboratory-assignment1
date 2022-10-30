@@ -9,9 +9,9 @@ project(exprob_ass1)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   armor_msgs
-  message_generation
   rospy
   std_msgs
+  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -105,7 +105,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES exprob_ass1
-#  CATKIN_DEPENDS actionlib_msgs armor armor_msgs multi_ontology_reference roscpp rospy std_msgs
+  CATKIN_DEPENDS message_runtime
 #  DEPENDS system_lib
 )
 

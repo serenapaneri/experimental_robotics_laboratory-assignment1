@@ -86,8 +86,6 @@ def main():
     
     rospy.wait_for_service('armor_interface_srv')
     print('Waiting for the armor service')
-    # rospy.wait_for_service('hints')
-    # print('Waiting for the hint service')
     
     armor_interface = rospy.ServiceProxy('armor_interface_srv', ArmorDirective)
 

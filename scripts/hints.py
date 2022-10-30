@@ -5,17 +5,18 @@ import random
 from exprob_ass1.msg import Hint
 
 hypo = rospy.get_param('hypo')
-people = rospy.get_param('people')
-weapons = rospy.get_param('weapons')
-places = rospy.get_param('places')
 ID = rospy.get_param('ID')
+hint_pub = None
 random_hypo = []
-indexes = []
 
 def main():
-    global hypo, people, weapons, places
+    global hypo, ID, hint_pub
     rospy.init_node('hints') 
-
+    
+    # hints publisher
+    hint_pub = rospy.Publisher('hint', Hint)
+    
+    # random hypotheses from the one generates
     random_hypo.append(random.choice(hypo[:]))
     flat_hypo = flatten(random_hypo)
     print(flat_hypo)
@@ -23,6 +24,7 @@ def main():
     # extracting id index
     id_index = list_index(flat_hypo, ID)
     
+    # generate the hints of the random hypothesis
     hints = [[] for _ in range(len(flat_hypo) - 1)]
     for i in range(len(flat_hypo) - 1):
         for j in id_index:
@@ -31,14 +33,16 @@ def main():
             print(hints)
         
     
-    # msg = Hint()
-    # msg = who.flat_hypo[]
-    # msg = what.flat_hypo[]
-    # msg = where.flat_hypo[]
-    # hint_pub.publish(msg)
+    msg = Hint()
+    for i in range(len(hints)):
+        msg.ind = hints[i][0]
+        msg.ID = hints[i][1]
+    
+    hint_pub.publish(msg)
     
     rospy.spin()
-    
+
+
 def flatten(list_):
     flat_list = []
     for element in list_:

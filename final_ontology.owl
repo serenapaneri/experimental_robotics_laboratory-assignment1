@@ -414,42 +414,6 @@
             <rdf:Description rdf:about="http://www.emarolab.it/cluedo-ontology#WEAPON"/>
         </owl:members>
     </rdf:Description>
-    <rdf:Description>
-        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDifferent"/>
-        <owl:distinctMembers rdf:parseType="Collection">
-            <rdf:Description rdf:about="http://www.emarolab.it/cluedo-ontology#Ballroom"/>
-            <rdf:Description rdf:about="http://www.emarolab.it/cluedo-ontology#Conservatory"/>
-            <rdf:Description rdf:about="http://www.emarolab.it/cluedo-ontology#Hall"/>
-            <rdf:Description rdf:about="http://www.emarolab.it/cluedo-ontology#Kitchen"/>
-            <rdf:Description rdf:about="http://www.emarolab.it/cluedo-ontology#Library"/>
-            <rdf:Description rdf:about="http://www.emarolab.it/cluedo-ontology#Lounge"/>
-            <rdf:Description rdf:about="http://www.emarolab.it/cluedo-ontology#Study"/>
-            <rdf:Description rdf:about="http://www.emarolab.it/cluedo-ontology#Billiard room"/>
-            <rdf:Description rdf:about="http://www.emarolab.it/cluedo-ontology#Dining room"/>
-        </owl:distinctMembers>
-    </rdf:Description>
-    <rdf:Description>
-        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDifferent"/>
-        <owl:distinctMembers rdf:parseType="Collection">
-            <rdf:Description rdf:about="http://www.emarolab.it/cluedo-ontology#Candlestick"/>
-            <rdf:Description rdf:about="http://www.emarolab.it/cluedo-ontology#Dagger"/>
-            <rdf:Description rdf:about="http://www.emarolab.it/cluedo-ontology#Revolver"/>
-            <rdf:Description rdf:about="http://www.emarolab.it/cluedo-ontology#Rope"/>
-            <rdf:Description rdf:about="http://www.emarolab.it/cluedo-ontology#Spanner"/>
-            <rdf:Description rdf:about="http://www.emarolab.it/cluedo-ontology#Lead Pipe"/>
-        </owl:distinctMembers>
-    </rdf:Description>
-    <rdf:Description>
-        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDifferent"/>
-        <owl:distinctMembers rdf:parseType="Collection">
-            <rdf:Description rdf:about="http://www.emarolab.it/cluedo-ontology#Col. Mustard"/>
-            <rdf:Description rdf:about="http://www.emarolab.it/cluedo-ontology#Miss. Scarlett"/>
-            <rdf:Description rdf:about="http://www.emarolab.it/cluedo-ontology#Mrs. White"/>
-            <rdf:Description rdf:about="http://www.emarolab.it/cluedo-ontology#Msr. Peacock"/>
-            <rdf:Description rdf:about="http://www.emarolab.it/cluedo-ontology#Prof. Plum"/>
-            <rdf:Description rdf:about="http://www.emarolab.it/cluedo-ontology#Rev. Green"/>
-        </owl:distinctMembers>
-    </rdf:Description>
 </rdf:RDF>
 
 

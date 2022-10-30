@@ -1,3 +1,2 @@
-string ID
 string ind
-string wh
+string ID
