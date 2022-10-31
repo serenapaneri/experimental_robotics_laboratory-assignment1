@@ -20,6 +20,7 @@ def main():
     global armor_interface
     rospy.init_node('menage_ontology')
     
+    # armor service
     rospy.wait_for_service('armor_interface_srv')
     print('Waiting for the armor service')
     armor_interface = rospy.ServiceProxy('armor_interface_srv', ArmorDirective)
@@ -118,6 +119,9 @@ def disjoint_individuals():
     print('The individuals of the class PLACE have been disjoint')
 
 def reasoner():
+    """
+      It is the reasoner of the ontology
+    """
     req = ArmorDirectiveReq()
     req.client_name = 'menage_ontology'
     req.reference_name = 'cluedontology'
@@ -128,6 +132,9 @@ def reasoner():
     res = msg.armor_response
 
 def save():
+    """
+      It saves the ontology in a new file called final_ontology
+    """
     req = ArmorDirectiveReq()
     req.client_name = 'menage_ontology'
     req.reference_name = 'cluedontology'
@@ -141,6 +148,11 @@ def save():
           
     
 def all_hypotheses():
+    """
+      This function generates random hypotheses for the game.
+      Some of them are complete and consistent, some of them are unconplete and
+      some of them are complete but inconsistent.
+    """
     hypotheses = [[] for _ in range(10)]
     
     # complete and consistent hypotheses
@@ -205,6 +217,9 @@ def all_hypotheses():
     return hypotheses
     
 def complete():
+    """
+      This function checks if the hypothesis is complete
+    """
     req = ArmorDirectiveReq()
     req.client_name = 'menage_ontology'
     req.reference_name = 'cluedontology'
@@ -216,6 +231,9 @@ def complete():
     res = msg.armor_response 
     
 def inconsistent():
+    """
+      This function checks if the hypothesis is inconsistent
+    """
     req = ArmorDirectiveReq()
     req.client_name = 'menage_ontology'
     req.reference_name = 'cluedontology'

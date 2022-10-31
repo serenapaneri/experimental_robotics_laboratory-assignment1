@@ -5,37 +5,47 @@ import random
 from random import randint
 from armor_msgs.srv import *
 from armor_msgs.msg import * 
-# from exprob_ass1.srv import Winhypothesis
+from exprob_ass1.srv import Winhypothesis, WinhypothesisResponse
+
+hypo = rospy.get_param('hypo')
 
 armor_interface = None
 feasible_hypotheses = []
 winning_hypothesis = []
 
-# DEVO IMPLEMENTARE IL SERVICE MA FUNZIONA
 
 def main():
-    global armor_interface
+    global armor_interface, hypo
     rospy.init_node('Oracle')
-    hypo = rospy.get_param('hypo')
-    print(hypo)
+
     rospy.wait_for_service('armor_interface_srv')
     print('Waiting for the armor service')
     armor_interface = rospy.ServiceProxy('armor_interface_srv', ArmorDirective)
+    
+    rospy.Service('winning_hypothesis', Winhypothesis, win_hypo)
 
-    # selecting the feasible hypotheses of the game
+    rospy.spin()
+    
+def win_hypo(req):
+    global hypo
     for i in range(4):
         feasible_hypotheses.append(hypo[i])
         
     n = randint(0, len(feasible_hypotheses)-1)
     
-    # random winning hypothesis
+    # random winning hypothesis and loaded in the ontology
     winning_hypothesis.append(feasible_hypotheses[n])
+    load_winning_hypothesis(winning_hypothesis)    
+    
+    msg = WinhypothesisResponse()
+    
+    msg.who = winning_hypothesis[0][0]
+    msg.what = winning_hypothesis[0][1]
+    msg.where = winning_hypothesis[0][2]
+    msg.ID = winning_hypothesis[0][3]
 
-    print('The winning hypothesis is:')
-    print("{} with the {} in the {}".format(winning_hypothesis[0][0], winning_hypothesis[0][1], winning_hypothesis[0][2]))
-    load_winning_hypothesis(winning_hypothesis)
-
-    rospy.spin()
+    return msg
+    
 
 def load_winning_hypothesis(win):
     req = ArmorDirectiveReq()
@@ -70,6 +80,7 @@ def load_winning_hypothesis(win):
     res = msg.armor_response 
     
     print("The solution of the game has been uploaded")
+    
 
 
 if __name__ == '__main__':

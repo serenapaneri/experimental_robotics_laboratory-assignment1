@@ -16,6 +16,8 @@ def main():
     # hints publisher
     hint_pub = rospy.Publisher('hint', Hint)
     
+    rate = rospy.Rate(2)
+    
     # random hypotheses from the one generates
     random_hypo.append(random.choice(hypo[:]))
     flat_hypo = flatten(random_hypo)
@@ -32,15 +34,14 @@ def main():
             hints[i].append(flat_hypo[j])
             print(hints)
         
+    while not rospy.is_shutdown():
+        msg = Hint()
+        for i in range(len(hints)):
+            msg.ind = hints[i][0]
+            msg.ID = hints[i][1]
     
-    msg = Hint()
-    for i in range(len(hints)):
-        msg.ind = hints[i][0]
-        msg.ID = hints[i][1]
-    
-    hint_pub.publish(msg)
-    
-    rospy.spin()
+        hint_pub.publish(msg)
+        rate.sleep()
 
 
 def flatten(list_):

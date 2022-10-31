@@ -7,11 +7,15 @@ import smach_ros
 import time
 from armor_msgs.srv import * 
 from armor_msgs.msg import * 
-# from exprob_ass1.msg import Hint
+from exprob_ass1.msg import Hint
 
-hints = None
+hints = Hint
+hint_sub = None
 
 def room_choice():
+    """
+      This function chooses a random room
+    """
     rooms_list = ['Conservatory', 'Lounge', 'Kitchen', 'Library', 'Hall', 'Study', 'Ballroom', 'Dining Room', 'Billiard Room'] 
     prev = None
     room = random.choice(rooms_list)
@@ -19,6 +23,11 @@ def room_choice():
         prev = room
     return prev
     
+def hint_callback(msg):
+    global hints
+    rospy.loginfo("")
+    hints = msg
+    return hints    
     
 class Motion(smach.State):
     # this class should simulate the movement between rooms
@@ -32,15 +41,18 @@ class Motion(smach.State):
         
     def execute(self, userdata):
         random_room = room_choice()
+        print("The robot is going to the {}".format(random_room))
+        time.sleep(5)
+        return 'enter_room'
         
-        if len(hints) < 3: # implement a counter
-            print("The robot is going to the {}".format(random_room))
-            time.sleep(5) # simulated time to reach a room
-            return 'enter_room'
-        else:
+        # if len(hints) < 3: # implement a counter
+        #    print("The robot is going to the {}".format(random_room))
+        #    time.sleep(5) # simulated time to reach a room
+        #    return 'enter_room'
+        # else:
             # here check also if it is complete and consistent
             # also after having a feasible hypothesis go to the oracle
-            return 'go_oracle'
+        #    return 'go_oracle'
         
         
 class Room(smach.State):
@@ -52,8 +64,11 @@ class Room(smach.State):
                              outcomes=['motion'])
         
     def execute(self, userdata):
+        global hints, hint_sub
         print("The robot is looking for hints")
         
+        hint_sub = rospy.Subscriber('hint', Hint, hint_callback)
+        rospy.wait_fot_message('hint', Hint)
         # here the should be the hint subscriber and the counter
         # for the hints recieved
 
