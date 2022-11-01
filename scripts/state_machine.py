@@ -8,9 +8,11 @@ import time
 from armor_msgs.srv import * 
 from armor_msgs.msg import * 
 from exprob_ass1.msg import Hint
+from exprob_ass.msg import Winhypothesis
 
 hints = Hint
 hint_sub = None
+armor_interface = None
 
 def room_choice():
     """
@@ -25,7 +27,7 @@ def room_choice():
     
 def hint_callback(msg):
     global hints
-    rospy.loginfo("")
+    rospy.loginfo("%w with %i" % (msg.ind, msg.ID))
     hints = msg
     return hints    
     
@@ -45,14 +47,14 @@ class Motion(smach.State):
         time.sleep(5)
         return 'enter_room'
         
-        # if len(hints) < 3: # implement a counter
+        # implement a counter
         #    print("The robot is going to the {}".format(random_room))
         #    time.sleep(5) # simulated time to reach a room
         #    return 'enter_room'
         # else:
             # here check also if it is complete and consistent
             # also after having a feasible hypothesis go to the oracle
-        #    return 'go_oracle'
+        return 'go_oracle'
         
         
 class Room(smach.State):
