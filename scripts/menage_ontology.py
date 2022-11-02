@@ -11,6 +11,9 @@ weapons = ['Candlestick', 'Dagger', 'Lead Pipe', 'Revolver', 'Rope', 'Spanner']
 places = ['Conservatory', 'Lounge', 'Kitchen', 'Library', 'Hall', 'Study', 'Ballroom', 'Dining room', 'Billiard room']
 ID = ['0000', '0001', '0002', '0003', '0004', '0005', '0006', '0007', '0008', '0009']
 
+rospy.set_param('people', people)
+rospy.set_param('weapons', weapons)
+rospy.set_param('places', places)
 rospy.set_param('ID', ID)
 
 armor_interface = None

@@ -37,11 +37,9 @@ def win_hypo(req):
     winning_hypothesis.append(feasible_hypotheses[n])
     load_winning_hypothesis(winning_hypothesis)
     
-    res = WinhypothesisResponse
-    res.check = False
-    
-    ID = req.ID
-    if ID == winning_hypothesis[0][3]:
+    res = WinhypothesisResponse()
+
+    if winning_hypothesis[0][3] == req.ID:
         res.check = True
     else:
         res.check = False        

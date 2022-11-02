@@ -8,13 +8,19 @@ import time
 from armor_msgs.srv import * 
 from armor_msgs.msg import * 
 from exprob_ass1.msg import Hint
-from exprob_ass1.srv import Winhypothesis
+from exprob_ass1.srv import Winhypothesis, WinhypothesisRequest
+
+people = rospy.get_param('people')
+weapons = rospy.get_param('weapons')
+places = rospy.get_param('places')
 
 dim = rospy.get_param('dim')
 hints = []
+hypo = []
 hint_sub = None
 armor_interface = None
 hint_count = 0
+attempt = 0
 
 def save():
     """
@@ -43,14 +49,72 @@ def room_choice():
     return prev
     
 def hint_callback(msg):
+    """
+      This function is the callback of the subscriber hint_sub
+    """
     global hints
     # print("{} with {}".format(msg.ind, msg.ID))
     hints.append(msg.ind)
     hints.append(msg.ID)
-    return hints 
+    return hints
     
-def wait_msg():
-    rospy.wait_for_message('hint', Hint)   
+def search(list_, element):
+    """
+      This function check if an element is present or not into a list
+    """
+    for i in range(len(list_)):
+        if list_[i] == element:
+            return True
+    return False
+    
+def classes(element):
+     """
+       This function is used to store the elements found into a list in
+       order to have them sorted, since the hints recieved are not.
+     """
+     global people, weapons, places, hypo
+     if search(people, element) == True:
+         hypo.insert(0, element)
+     elif search(weapons, element) == True:
+         hypo.insert(1, element)
+     elif search(places, element) == True:
+         hypo.insert(2, element)
+     return hypo
+     
+def load_hypothesis(hypo_):
+    req = ArmorDirectiveReq()
+    req.client_name = 'state_machine'
+    req.reference_name = 'cluedontology'
+    req.command = 'ADD'
+    req.primary_command_spec = 'IND'
+    req.secondary_command_spec = 'CLASS'
+    req.args = ['hypothesis' + str(attempt), 'HYPOTHESIS']
+    # [name that you want to give, cathegory on the ontology]
+    msg = armor_interface(req)
+    res = msg.armor_response
+    
+    req.command = 'ADD'
+    req.primary_command_spec = 'OBJECTPROP'
+    req.secondary_command_spec = 'IND'
+    req.args = ['who','hypothesis' + str(attempt), hypo_[0]]
+    msg = armor_interface(req)
+    res = msg.armor_response 
+    
+    req.command = 'ADD'
+    req.primary_command_spec = 'OBJECTPROP'
+    req.secondary_command_spec = 'IND'
+    req.args = ['what','hypothesis' + str(attempt), hypo_[1]]
+    res = armor_interface(req)
+    
+    req.command = 'ADD'
+    req.primary_command_spec = 'OBJECTPROP'
+    req.secondary_command_spec = 'IND'
+    req.args = ['where','hypothesis' + str(attempt), hypo_[2]]
+    msg = armor_interface(req)
+    res = msg.armor_response 
+    
+    print("The hypothesis {} has been uploaded".format(attempt))
+     
     
 class Motion(smach.State):
     # this class should simulate the movement between rooms
@@ -64,18 +128,18 @@ class Motion(smach.State):
         
     def execute(self, userdata):
         random_room = room_choice()
-        print("The robot is going to the {}".format(random_room))
-        time.sleep(5)
-        
+
         if hint_count < dim:
-            print('The robot goes looking for hints')
+            time.sleep(2)
+            print("The robot is going to the {}".format(random_room))
+            time.sleep(5)
             return 'enter_room'
 
         else:
             # check completeness and consistency
             print('Check if it is complete')
             print('Check if it is consistent')
-
+            time.sleep(5)
             print('The robot is ready to go to the oracle')
             return 'go_oracle'
         
@@ -84,19 +148,21 @@ class Room(smach.State):
     # this class should simulates what happens when the robot enters in a room searching for
     # hints. 
     def __init__(self):
-        # initialisation function, it should not wait
         smach.State.__init__(self, 
                              outcomes=['motion'])
         
     def execute(self, userdata):
-        global hint_sub, dim, hints, hint_count
+        global hint_sub, dim, hints, hint_count, hypo
         print("The robot is looking for hints")
-        
+        rospy.sleep(3)
         hint_sub = rospy.Subscriber('hint', Hint, hint_callback)
-        wait_msg()
+        # wait_msg()
+        rospy.wait_for_message('hint', Hint)
         hint_count += 1
         # prendo sempre l'ultimo ind
         print('Hint found: {}'.format(hints[-2]))
+        classes(hints[-2])
+        rospy.sleep(2)
         return 'motion'
         
 class Oracle(smach.State):
@@ -110,19 +176,24 @@ class Oracle(smach.State):
                              outcomes=['motion','game_finished'])
         
     def execute(self, userdata):
-        global oracle_client
+        global oracle_client, hints, hypo, attempt
         print('The robot is inside the oracle rooom')
+        rospy.sleep(5)
         rospy.wait_for_service('winning_hypothesis')
-        print('Oracle: Name your guess')
+        print('Oracle: "Name your guess"')
+        attempt += 1
         time.sleep(2)
-        print('{} with {} in the {}'.format(hints[0], hints[2], hints[4]))
+        print('{} with {} in the {}'.format(hypo[0], hypo[1], hypo[2]))
+        load_hypothesis(hypo)
         time.sleep(1)
-        res = oracle_client(hints[5])
-        if res.check:
+        req = WinhypothesisRequest()
+        req.ID = hints[5]
+        res = oracle_client(req)
+        if res.check == True:
             print('Yes, you guessed right')
             save()
             return 'game_finished'
-        else:
+        elif res.check == False:
             print('No you are wrong, maybe next time you will have better luck')
             return 'motion' 
         
@@ -144,7 +215,7 @@ def main():
                                             'go_oracle':'Oracle'})
         smach.StateMachine.add('Room', Room(), 
                                transitions={'motion':'Motion'})
-        smach.StateMachine.add('ORACLE', Oracle(), 
+        smach.StateMachine.add('Oracle', Oracle(), 
                                transitions={'motion':'Motion', 
                                             'game_finished':'game_finished'})
 
