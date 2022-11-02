@@ -35,21 +35,22 @@ def win_hypo(req):
     
     # random winning hypothesis and loaded in the ontology
     winning_hypothesis.append(feasible_hypotheses[n])
-    load_winning_hypothesis(winning_hypothesis)    
+    load_winning_hypothesis(winning_hypothesis)
     
-    msg = WinhypothesisResponse()
+    res = WinhypothesisResponse
+    res.check = False
     
-    msg.who = winning_hypothesis[0][0]
-    msg.what = winning_hypothesis[0][1]
-    msg.where = winning_hypothesis[0][2]
-    msg.ID = winning_hypothesis[0][3]
-
-    return msg
+    ID = req.ID
+    if ID == winning_hypothesis[0][3]:
+        res.check = True
+    else:
+        res.check = False        
+    return res
     
 
 def load_winning_hypothesis(win):
     req = ArmorDirectiveReq()
-    req.client_name = 'menage_ontology'
+    req.client_name = 'oracle'
     req.reference_name = 'cluedontology'
     req.command = 'ADD'
     req.primary_command_spec = 'IND'

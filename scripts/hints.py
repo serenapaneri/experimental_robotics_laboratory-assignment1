@@ -33,16 +33,18 @@ def main():
             hints[i].append(flat_hypo[i])
             hints[i].append(flat_hypo[j])
             print(hints)
-        
-    # while not rospy.is_shutdown():
-    msg = Hint()
-    for i in range(len(hints)):
-        msg.ind = hints[i][0]
-        msg.ID = hints[i][1]
     
-    # rospy.loginfo(msg)
-        rate.sleep()
-        hint_pub.publish(msg)
+    rospy.set_param('dim', len(hints))
+    rospy.sleep(5)  
+    while not rospy.is_shutdown():
+        msg = Hint()
+        for i in range(len(hints)):
+            msg.ind = hints[i][0]
+            msg.ID = hints[i][1]
+    
+            # rospy.loginfo(msg)
+            rate.sleep()
+            hint_pub.publish(msg)
 
 
 def flatten(list_):

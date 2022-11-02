@@ -1,4 +1,4 @@
-#! /usr/bin/env python2
+#!/usr/bin/env python2
 
 import rospy
 import random
@@ -16,18 +16,22 @@ def hint_callback(msg):
     # print(hints)
     return hints
     
+def wait_msg(num):
+    rospy.wait_for_message('hint', Hint)
+    
 def main():
     global hints
     rospy.init_node('hints_reciever')
     hint_sub = rospy.Subscriber('hint', Hint, hint_callback)
-    rate = rospy.Rate(1)
-    while not rospy.is_shutdown():
-        rate.sleep()
-    # rospy.wait_for_message('hint', Hint)
-    # rospy.wait_for_message('hint', Hint)
-    # rospy.wait_for_message('hint', Hint)
+    dim = rospy.get_param('dim')
+    count = 0
+    for n in range(dim):
+        # count += 1
+        wait_msg(n)
         print(hints)
-    # rospy.spin()
+        # print(hints[-2])
+        print('aspetta')
+
     
 if __name__ == '__main__':
     main()
