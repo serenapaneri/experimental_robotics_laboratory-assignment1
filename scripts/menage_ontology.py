@@ -36,11 +36,8 @@ def main():
     reasoner()
     # disjoint the individuals of all the classes
     disjoint_individuals()
-    
+    reasoner()
     all_hypotheses()
-    
-    # save the new modified ontology
-    save()
     
     try:
         rospy.spin()
@@ -133,21 +130,6 @@ def reasoner():
     req.secondary_command_spec = ''
     msg = armor_interface(req)
     res = msg.armor_response
-
-def save():
-    """
-      It saves the ontology in a new file called final_ontology
-    """
-    req = ArmorDirectiveReq()
-    req.client_name = 'menage_ontology'
-    req.reference_name = 'cluedontology'
-    req.command = 'SAVE'
-    req.primary_command_spec = ''
-    req.secondary_command_spec = ''
-    req.args = ['/root/ros_ws/src/exprob_ass1/final_ontology.owl']
-    msg = armor_interface(req)
-    res = msg.armor_response
-    print('The new ontology has been saved under the name final_ontology.owl')
           
     
 def all_hypotheses():
@@ -218,35 +200,6 @@ def all_hypotheses():
     
     rospy.set_param('hypo', hypotheses)
     return hypotheses
-    
-def complete():
-    """
-      This function checks if the hypothesis is complete
-    """
-    req = ArmorDirectiveReq()
-    req.client_name = 'menage_ontology'
-    req.reference_name = 'cluedontology'
-    req.command = 'QUERY'
-    req.primary_command_spec = 'IND'
-    req.secondary_command_spec = 'CLASS'
-    req.args = ['COMPLETE']
-    msg = armor_interface(req)
-    res = msg.armor_response 
-    
-def inconsistent():
-    """
-      This function checks if the hypothesis is inconsistent
-    """
-    req = ArmorDirectiveReq()
-    req.client_name = 'menage_ontology'
-    req.reference_name = 'cluedontology'
-    req.command = 'QUERY'
-    req.primary_command_spec = 'IND'
-    req.secondary_command_spec = 'CLASS'
-    req.args = ['INCONSISTENT']
-    msg = armor_interface(req)
-    res = msg.armor_response 
-    
     
 if __name__ == '__main__':
     main()

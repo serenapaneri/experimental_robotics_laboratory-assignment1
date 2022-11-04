@@ -8,7 +8,7 @@ import time
 from armor_msgs.srv import * 
 from armor_msgs.msg import * 
 from exprob_ass1.msg import Hint
-from exprob_ass1.srv import Winhypothesis, WinhypothesisRequest
+from exprob_ass1.srv import Winhypothesis, WinhypothesisRequest, Command, CommandRequest
 
 people = rospy.get_param('people')
 weapons = rospy.get_param('weapons')
@@ -19,8 +19,52 @@ hints = []
 hypo = []
 hint_sub = None
 armor_interface = None
+oracle_client = None
+comm_client = None
 hint_count = 0
 attempt = 0
+
+def reasoner():
+    """
+      It is the reasoner of the ontology
+    """
+    req = ArmorDirectiveReq()
+    req.client_name = 'menage_ontology'
+    req.reference_name = 'cluedontology'
+    req.command = 'REASON'
+    req.primary_command_spec = ''
+    req.secondary_command_spec = ''
+    msg = armor_interface(req)
+    res = msg.armor_response
+    return res
+
+def complete():
+    """
+      This function checks if the hypothesis is complete
+    """
+    req = ArmorDirectiveReq()
+    req.client_name = 'state_machine'
+    req.reference_name = 'cluedontology'
+    req.command = 'QUERY'
+    req.primary_command_spec = 'IND'
+    req.secondary_command_spec = 'CLASS'
+    req.args = ['COMPLETE']
+    msg = armor_interface(req)
+    res = msg.armor_response
+    
+def inconsistent():
+    """
+      This function checks if the hypothesis is inconsistent
+    """
+    req = ArmorDirectiveReq()
+    req.client_name = 'state_machine'
+    req.reference_name = 'cluedontology'
+    req.command = 'QUERY'
+    req.primary_command_spec = 'IND'
+    req.secondary_command_spec = 'CLASS'
+    req.args = ['INCONSISTENT']
+    msg = armor_interface(req)
+    res = msg.armor_response
 
 def save():
     """
@@ -32,10 +76,11 @@ def save():
     req.command = 'SAVE'
     req.primary_command_spec = ''
     req.secondary_command_spec = ''
-    req.args = ['/root/ros_ws/src/exprob_ass1/final_ontology.owl']
+    req.args = ['/root/ros_ws/src/exprob_ass1/ddd.owl']
     msg = armor_interface(req)
     res = msg.armor_response
     print('The new ontology has been saved under the name final_ontology.owl')
+    
 
 def room_choice():
     """
@@ -81,7 +126,11 @@ def classes(element):
          hypo.insert(2, element)
      return hypo
      
-def load_hypothesis(hypo_):
+def upload_hypothesis(hypo_):
+    """
+      This function upload the hypothesis in the ontology
+    """
+    global people, weapons, places
     req = ArmorDirectiveReq()
     req.client_name = 'state_machine'
     req.reference_name = 'cluedontology'
@@ -89,29 +138,38 @@ def load_hypothesis(hypo_):
     req.primary_command_spec = 'IND'
     req.secondary_command_spec = 'CLASS'
     req.args = ['hypothesis' + str(attempt), 'HYPOTHESIS']
-    # [name that you want to give, cathegory on the ontology]
     msg = armor_interface(req)
     res = msg.armor_response
     
-    req.command = 'ADD'
-    req.primary_command_spec = 'OBJECTPROP'
-    req.secondary_command_spec = 'IND'
-    req.args = ['who','hypothesis' + str(attempt), hypo_[0]]
-    msg = armor_interface(req)
-    res = msg.armor_response 
+    for element in hypo_:
+        # if the element of the list is in people list
+        who = search(people, element)
+        # if the element of the list is in weapons list
+        what = search(weapons, element)
+        # if the element of the list is in places list
+        where = search(places, element)
+        if who == True:  
+            req.command = 'ADD'
+            req.primary_command_spec = 'OBJECTPROP'
+            req.secondary_command_spec = 'IND'
+            req.args = ['who','hypothesis' + str(attempt), element]
+            msg = armor_interface(req)
+            res = msg.armor_response 
     
-    req.command = 'ADD'
-    req.primary_command_spec = 'OBJECTPROP'
-    req.secondary_command_spec = 'IND'
-    req.args = ['what','hypothesis' + str(attempt), hypo_[1]]
-    res = armor_interface(req)
+        elif what == True:
+            req.command = 'ADD'
+            req.primary_command_spec = 'OBJECTPROP'
+            req.secondary_command_spec = 'IND'
+            req.args = ['what','hypothesis' + str(attempt), element]
+            res = armor_interface(req)
     
-    req.command = 'ADD'
-    req.primary_command_spec = 'OBJECTPROP'
-    req.secondary_command_spec = 'IND'
-    req.args = ['where','hypothesis' + str(attempt), hypo_[2]]
-    msg = armor_interface(req)
-    res = msg.armor_response 
+        elif where == True:
+            req.command = 'ADD'
+            req.primary_command_spec = 'OBJECTPROP'
+            req.secondary_command_spec = 'IND'
+            req.args = ['where','hypothesis' + str(attempt), element]
+            msg = armor_interface(req)
+            res = msg.armor_response 
     
     print("The hypothesis {} has been uploaded".format(attempt))
      
@@ -127,19 +185,47 @@ class Motion(smach.State):
                              outcomes=['enter_room','go_oracle'])
         
     def execute(self, userdata):
+        global hypo, attempt, comm_client
+        # choosing a random room
         random_room = room_choice()
 
+        # if the number of hints collected is less than expected 
         if hint_count < dim:
             time.sleep(2)
-            print("The robot is going to the {}".format(random_room))
+            # the robot continues to search 
+            print("The robot is going to the {} ..".format(random_room))
             time.sleep(5)
             return 'enter_room'
 
         else:
-            # check completeness and consistency
-            print('Check if it is complete')
-            print('Check if it is consistent')
+            # comando per stoppare hints.py
+            comm_client("stop")
+            # counter that keeps track of the hypotheses collected
+            attempt += 1
+            # we upload the hypothesis into the ontology 
+            upload_hypothesis(hypo)
+            # reason
+            reasoner()
+            # save()
             time.sleep(5)
+            # check completeness and consistency
+            print('Checking if it is complete ..')
+            time.sleep(1)
+            # iscomplete = complete()
+            # if iscomplete.success == False:
+            print('The hypothesis is uncomplete')
+                # change hypothesis
+            # elif iscomplete.success == True:
+            print('The hypothesis is complete')
+            #    time.sleep(1)
+            print('Checking if it is consistent ..')
+            #     time.sleep(1)
+            #    isincosistent = inconsistent()
+            #    if isincosistent.success == False:
+            print('The hypothesis is inconsistent')
+            #         time.sleep(1)
+            #     elif isincosistent.success == True:
+            print('The hypothesis is complete and consistent')
             print('The robot is ready to go to the oracle')
             return 'go_oracle'
         
@@ -153,16 +239,18 @@ class Room(smach.State):
         
     def execute(self, userdata):
         global hint_sub, dim, hints, hint_count, hypo
-        print("The robot is looking for hints")
-        rospy.sleep(3)
+        print("The robot is looking for hints ..")
+        time.sleep(3)
+        # subsccriber to the hint topic
         hint_sub = rospy.Subscriber('hint', Hint, hint_callback)
-        # wait_msg()
         rospy.wait_for_message('hint', Hint)
+        # counter that keeps track of the hints recieved
         hint_count += 1
-        # prendo sempre l'ultimo ind
-        print('Hint found: {}'.format(hints[-2]))
+        # consider the second-last element of the list that corresponds to the last individual added
+        print('HINT FOUND: {}'.format(hints[-2]))
+        # assigning the hint into the right position since they come in a random order
         classes(hints[-2])
-        rospy.sleep(2)
+        time.sleep(2)
         return 'motion'
         
 class Oracle(smach.State):
@@ -176,30 +264,41 @@ class Oracle(smach.State):
                              outcomes=['motion','game_finished'])
         
     def execute(self, userdata):
-        global oracle_client, hints, hypo, attempt
+        global oracle_client, comm_client, hints, hypo, attempt, hint_count
         print('The robot is inside the oracle rooom')
-        rospy.sleep(5)
+        time.sleep(3)
+        
+        # waiting for the service that gives the ID of the winning hypothesis
         rospy.wait_for_service('winning_hypothesis')
+        
         print('Oracle: "Name your guess"')
-        attempt += 1
         time.sleep(2)
         print('{} with {} in the {}'.format(hypo[0], hypo[1], hypo[2]))
-        load_hypothesis(hypo)
         time.sleep(1)
         req = WinhypothesisRequest()
+        # knowing that the ID is always in the second position also hints[1] and hints[3] gives the same result
         req.ID = hints[5]
         res = oracle_client(req)
+        # if the two strings coincides
         if res.check == True:
-            print('Yes, you guessed right')
+            print('Yes, you guessed right!')
             save()
             return 'game_finished'
+        # otherwise if they are not the same   
         elif res.check == False:
             print('No you are wrong, maybe next time you will have better luck')
+            # emtpty the list
+            hint_count = 0
+            hypo.clear()
+            save()
+            # comando per far ripartire lo script hints.py
+            comm_client('start')
+            time.sleep(5)
             return 'motion' 
         
         
 def main():
-    global armor_interface, oracle_client
+    global armor_interface, oracle_client, comm_client
     rospy.init_node('state_machine')
     sm = smach.StateMachine(outcomes=['game_finished'])
     
@@ -208,6 +307,8 @@ def main():
     
     armor_interface = rospy.ServiceProxy('armor_interface_srv', ArmorDirective)
     oracle_client = rospy.ServiceProxy('winning_hypothesis', Winhypothesis)
+    comm_client = rospy.ServiceProxy('comm', Command)
+    
 
     with sm:
         smach.StateMachine.add('Motion', Motion(), 

@@ -23,6 +23,7 @@ def main():
     armor_interface = rospy.ServiceProxy('armor_interface_srv', ArmorDirective)
     
     rospy.Service('winning_hypothesis', Winhypothesis, win_hypo)
+    reasoner()
 
     rospy.spin()
     
@@ -36,6 +37,10 @@ def win_hypo(req):
     # random winning hypothesis and loaded in the ontology
     winning_hypothesis.append(feasible_hypotheses[n])
     load_winning_hypothesis(winning_hypothesis)
+    reasoner()
+    
+    print('The winning hypothesis is:')
+    print('{} with the {} in the {}'.format(winning_hypothesis[0][0], winning_hypothesis[0][1], winning_hypothesis[0][2]))
     
     res = WinhypothesisResponse()
 
@@ -80,7 +85,19 @@ def load_winning_hypothesis(win):
     
     print("The solution of the game has been uploaded")
     
-
+def reasoner():
+    """
+      It is the reasoner of the ontology
+    """
+    req = ArmorDirectiveReq()
+    req.client_name = 'menage_ontology'
+    req.reference_name = 'cluedontology'
+    req.command = 'REASON'
+    req.primary_command_spec = ''
+    req.secondary_command_spec = ''
+    msg = armor_interface(req)
+    res = msg.armor_response
+    
 
 if __name__ == '__main__':
     main()
