@@ -36,7 +36,9 @@ def main():
     reasoner()
     # disjoint the individuals of all the classes
     disjoint_individuals()
+    
     reasoner()
+    
     all_hypotheses()
     
     try:
@@ -200,6 +202,21 @@ def all_hypotheses():
     
     rospy.set_param('hypo', hypotheses)
     return hypotheses
+    
+def save():
+    """
+      It saves the ontology in a new file called final_ontology
+    """
+    req = ArmorDirectiveReq()
+    req.client_name = 'state_machine'
+    req.reference_name = 'cluedontology'
+    req.command = 'SAVE'
+    req.primary_command_spec = ''
+    req.secondary_command_spec = ''
+    req.args = ['/root/ros_ws/src/exprob_ass1/gggg.owl']
+    msg = armor_interface(req)
+    res = msg.armor_response
+    print('The new ontology has been saved under the name final_ontology.owl')
     
 if __name__ == '__main__':
     main()

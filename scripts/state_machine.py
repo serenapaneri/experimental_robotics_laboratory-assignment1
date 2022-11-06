@@ -13,6 +13,7 @@ from exprob_ass1.srv import Winhypothesis, WinhypothesisRequest, Command, Comman
 people = rospy.get_param('people')
 weapons = rospy.get_param('weapons')
 places = rospy.get_param('places')
+ID = rospy.get_param('ID')
 
 dim = rospy.get_param('dim')
 hints = []
@@ -29,14 +30,26 @@ def reasoner():
       It is the reasoner of the ontology
     """
     req = ArmorDirectiveReq()
-    req.client_name = 'menage_ontology'
+    req.client_name = 'state_machine'
     req.reference_name = 'cluedontology'
     req.command = 'REASON'
     req.primary_command_spec = ''
     req.secondary_command_spec = ''
     msg = armor_interface(req)
     res = msg.armor_response
-    return res
+    
+def apply_():
+    """
+      It is the reasoner of the ontology
+    """
+    req = ArmorDirectiveReq()
+    req.client_name = 'state_machine'
+    req.reference_name = 'cluedontology'
+    req.command = 'APPLY'
+    req.primary_command_spec = ''
+    req.secondary_command_spec = ''
+    msg = armor_interface(req)
+    res = msg.armor_response
 
 def complete():
     """
@@ -48,9 +61,10 @@ def complete():
     req.command = 'QUERY'
     req.primary_command_spec = 'IND'
     req.secondary_command_spec = 'CLASS'
-    req.args = ['COMPLETE']
+    req.args = ['COMPLETED']
     msg = armor_interface(req)
     res = msg.armor_response
+    return res
     
 def inconsistent():
     """
@@ -65,6 +79,7 @@ def inconsistent():
     req.args = ['INCONSISTENT']
     msg = armor_interface(req)
     res = msg.armor_response
+    return res
 
 def save():
     """
@@ -76,7 +91,7 @@ def save():
     req.command = 'SAVE'
     req.primary_command_spec = ''
     req.secondary_command_spec = ''
-    req.args = ['/root/ros_ws/src/exprob_ass1/ddd.owl']
+    req.args = ['/root/ros_ws/src/exprob_ass1/eeee.owl']
     msg = armor_interface(req)
     res = msg.armor_response
     print('The new ontology has been saved under the name final_ontology.owl')
@@ -125,22 +140,17 @@ def classes(element):
      elif search(places, element) == True:
          hypo.insert(2, element)
      return hypo
+    
      
 def upload_hypothesis(hypo_):
     """
       This function upload the hypothesis in the ontology
     """
-    global people, weapons, places
+    global people, weapons, places, attempt
     req = ArmorDirectiveReq()
     req.client_name = 'state_machine'
     req.reference_name = 'cluedontology'
-    req.command = 'ADD'
-    req.primary_command_spec = 'IND'
-    req.secondary_command_spec = 'CLASS'
-    req.args = ['hypothesis' + str(attempt), 'HYPOTHESIS']
-    msg = armor_interface(req)
-    res = msg.armor_response
-    
+
     for element in hypo_:
         # if the element of the list is in people list
         who = search(people, element)
@@ -152,7 +162,7 @@ def upload_hypothesis(hypo_):
             req.command = 'ADD'
             req.primary_command_spec = 'OBJECTPROP'
             req.secondary_command_spec = 'IND'
-            req.args = ['who','hypothesis' + str(attempt), element]
+            req.args = ['who','Hypothesis' + str(attempt), element]
             msg = armor_interface(req)
             res = msg.armor_response 
     
@@ -160,14 +170,14 @@ def upload_hypothesis(hypo_):
             req.command = 'ADD'
             req.primary_command_spec = 'OBJECTPROP'
             req.secondary_command_spec = 'IND'
-            req.args = ['what','hypothesis' + str(attempt), element]
+            req.args = ['what','Hypothesis' + str(attempt), element]
             res = armor_interface(req)
     
         elif where == True:
             req.command = 'ADD'
             req.primary_command_spec = 'OBJECTPROP'
             req.secondary_command_spec = 'IND'
-            req.args = ['where','hypothesis' + str(attempt), element]
+            req.args = ['where','Hypothesis' + str(attempt), element]
             msg = armor_interface(req)
             res = msg.armor_response 
     
@@ -182,10 +192,10 @@ class Motion(smach.State):
     # is consistent then it should go to the oracle testing his hypothesis 
     def __init__(self):
         smach.State.__init__(self, 
-                             outcomes=['enter_room','go_oracle'])
+                             outcomes=['enter_room','go_oracle', 'motion'])
         
     def execute(self, userdata):
-        global hypo, attempt, comm_client
+        global hypo, attempt, comm_client, hint_count
         # choosing a random room
         random_room = room_choice()
 
@@ -204,29 +214,41 @@ class Motion(smach.State):
             attempt += 1
             # we upload the hypothesis into the ontology 
             upload_hypothesis(hypo)
+            time.sleep(2)
+            apply_()
             # reason
             reasoner()
             # save()
-            time.sleep(5)
+            time.sleep(3)
+            
             # check completeness and consistency
-            print('Checking if it is complete ..')
-            time.sleep(1)
+            # print('Checking if it is complete ..')
+            # time.sleep(1)
             # iscomplete = complete()
-            # if iscomplete.success == False:
-            print('The hypothesis is uncomplete')
-                # change hypothesis
-            # elif iscomplete.success == True:
-            print('The hypothesis is complete')
-            #    time.sleep(1)
-            print('Checking if it is consistent ..')
+            # if len(iscomplete.queried_objects) == 0:
+            #     print('The hypothesis is uncomplete')
+            #     hint_count = 0
+            #     hypo.clear()
+            #     return 'motion'
+                   
+            # elif len(iscomplete.queried_objects) != 0:
+            #     print('The hypothesis is complete')
             #     time.sleep(1)
-            #    isincosistent = inconsistent()
-            #    if isincosistent.success == False:
-            print('The hypothesis is inconsistent')
+                
+            #     print('Checking if it is consistent ..')
+            #     time.sleep(1)
+            #     isincosistent = inconsistent()
+            #     if len(isincosistent.queried_objects) != 0:
+            #         print('The hypothesis is inconsistent')
+            #         hint_count = 0
+            #         hypo.clear()
+            #         remove()
+            #         return 'motion'
             #         time.sleep(1)
-            #     elif isincosistent.success == True:
-            print('The hypothesis is complete and consistent')
-            print('The robot is ready to go to the oracle')
+                    
+            #     elif len(isincosistent.queried_objects) == 0:
+            #         print('The hypothesis is complete and consistent')
+            #         print('The robot is ready to go to the oracle')
             return 'go_oracle'
         
         
@@ -273,7 +295,7 @@ class Oracle(smach.State):
         
         print('Oracle: "Name your guess"')
         time.sleep(2)
-        print('{} with {} in the {}'.format(hypo[0], hypo[1], hypo[2]))
+        print('{} with the {} in the {}'.format(hypo[0], hypo[1], hypo[2]))
         time.sleep(1)
         req = WinhypothesisRequest()
         # knowing that the ID is always in the second position also hints[1] and hints[3] gives the same result
@@ -313,7 +335,8 @@ def main():
     with sm:
         smach.StateMachine.add('Motion', Motion(), 
                                transitions={'enter_room':'Room', 
-                                            'go_oracle':'Oracle'})
+                                            'go_oracle':'Oracle',
+                                            'motion': 'Motion'})
         smach.StateMachine.add('Room', Room(), 
                                transitions={'motion':'Motion'})
         smach.StateMachine.add('Oracle', Oracle(), 

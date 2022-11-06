@@ -23,6 +23,7 @@ def main():
     armor_interface = rospy.ServiceProxy('armor_interface_srv', ArmorDirective)
     
     rospy.Service('winning_hypothesis', Winhypothesis, win_hypo)
+    apply_()
     reasoner()
 
     rospy.spin()
@@ -55,13 +56,13 @@ def load_winning_hypothesis(win):
     req = ArmorDirectiveReq()
     req.client_name = 'oracle'
     req.reference_name = 'cluedontology'
-    req.command = 'ADD'
-    req.primary_command_spec = 'IND'
-    req.secondary_command_spec = 'CLASS'
-    req.args = ['Winning_hypothesis', 'HYPOTHESIS']
+    # req.command = 'ADD'
+    # req.primary_command_spec = 'IND'
+    # req.secondary_command_spec = 'CLASS'
+    # req.args = ['Winning_hypothesis', 'HYPOTHESIS']
     # [name that you want to give, cathegory on the ontology]
-    msg = armor_interface(req)
-    res = msg.armor_response
+    # msg = armor_interface(req)
+    # res = msg.armor_response
     
     req.command = 'ADD'
     req.primary_command_spec = 'OBJECTPROP'
@@ -84,6 +85,20 @@ def load_winning_hypothesis(win):
     res = msg.armor_response 
     
     print("The solution of the game has been uploaded")
+
+def apply_():
+    """
+      It is the reasoner of the ontology
+    """
+    req = ArmorDirectiveReq()
+    req.client_name = 'state_machine'
+    req.reference_name = 'cluedontology'
+    req.command = 'APPLY'
+    req.primary_command_spec = ''
+    req.secondary_command_spec = ''
+    msg = armor_interface(req)
+    res = msg.armor_response
+
     
 def reasoner():
     """
