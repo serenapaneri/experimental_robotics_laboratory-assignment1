@@ -165,17 +165,14 @@ def all_hypotheses():
     
     # uncomplete hypotheses 
     hypotheses[4].append(random.choice(people))
-    hypotheses[4].append(random.choice(people))
     hypotheses[4].append(random.choice(places))
     hypotheses[4].append('0004')
     
     hypotheses[5].append(random.choice(weapons))
     hypotheses[5].append(random.choice(places))
-    hypotheses[5].append(random.choice(places))
     hypotheses[5].append('0005')
     
     hypotheses[6].append(random.choice(people))
-    hypotheses[6].append(random.choice(weapons))
     hypotheses[6].append(random.choice(weapons))
     hypotheses[6].append('0006')
      
@@ -199,6 +196,8 @@ def all_hypotheses():
     hypotheses[9].append(random.choice(places))
     hypotheses[9].append(random.choice(places))
     hypotheses[9].append('0009')
+    
+    print(hypotheses)
     
     rospy.set_param('hypo', hypotheses)
     return hypotheses

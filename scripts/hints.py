@@ -18,7 +18,7 @@ def com(req):
         start = True
     elif (req.command == 'stop'):
         start = False
-    return True
+    return start
 
 def main():
     global hypo, ID, hint_pub, comm_service
@@ -64,6 +64,19 @@ def main():
     elif start == False:
         while not rospy.is_shutdown():
             print('restarting')
+            # the following code is just for setting the parameter dim 
+            random_hypo.append(random.choice(hypo[:]))
+            flat_hypo = flatten(random_hypo)
+            print(flat_hypo)
+            id_index = list_index(flat_hypo, ID)
+            hints = [[] for _ in range(len(flat_hypo) - 1)]
+            for i in range(len(flat_hypo) - 1):
+                for j in id_index:
+                    hints[i].append(flat_hypo[i])
+                    hints[i].append(flat_hypo[j])
+                    print(hints)
+        
+            rospy.set_param('dim', len(hints))
             rate.sleep()
 
 def flatten(list_):

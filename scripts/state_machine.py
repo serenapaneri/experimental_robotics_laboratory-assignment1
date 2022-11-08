@@ -89,9 +89,9 @@ def save():
     req.client_name = 'state_machine'
     req.reference_name = 'cluedontology'
     req.command = 'SAVE'
-    req.primary_command_spec = ''
+    req.primary_command_spec = 'INFERENCE'
     req.secondary_command_spec = ''
-    req.args = ['/root/ros_ws/src/exprob_ass1/eeee.owl']
+    req.args = ['/root/ros_ws/src/exprob_ass1/ffff.owl']
     msg = armor_interface(req)
     res = msg.armor_response
     print('The new ontology has been saved under the name final_ontology.owl')
@@ -209,7 +209,7 @@ class Motion(smach.State):
 
         else:
             # comando per stoppare hints.py
-            comm_client("stop")
+            comm_client('stop')
             # counter that keeps track of the hypotheses collected
             attempt += 1
             # we upload the hypothesis into the ontology 
@@ -218,39 +218,50 @@ class Motion(smach.State):
             apply_()
             # reason
             reasoner()
-            # save()
+            comm_client('start')
             time.sleep(3)
             
             # check completeness and consistency
-            # print('Checking if it is complete ..')
-            # time.sleep(1)
-            # iscomplete = complete()
-            # if len(iscomplete.queried_objects) == 0:
-            #     print('The hypothesis is uncomplete')
-            #     hint_count = 0
-            #     hypo.clear()
-            #     return 'motion'
-                   
-            # elif len(iscomplete.queried_objects) != 0:
-            #     print('The hypothesis is complete')
-            #     time.sleep(1)
+            print('Checking if it is complete ..')
+            iscomplete = complete()
+            time.sleep(1)
+            # valutare se -1 o 0
+            if len(iscomplete.queried_objects) == 0:
+                hint_count = 0
+                hypo.clear()
+                time.sleep(1)
+                return 'motion'
+            elif len(iscomplete.queried_objects) != 0:
+                if str(attempt) not in iscomplete.queried_objects[-1]:
+                    print('The hypothesis is uncomplete')
+                    hint_count = 0
+                    hypo.clear()
+                    time.sleep(1)
+                    return 'motion'
+                elif str(attempt) in iscomplete.queried_objects[-1]:
+                    print('The hypothesis is complete')
+                    time.sleep(1)
                 
-            #     print('Checking if it is consistent ..')
-            #     time.sleep(1)
-            #     isincosistent = inconsistent()
-            #     if len(isincosistent.queried_objects) != 0:
-            #         print('The hypothesis is inconsistent')
-            #         hint_count = 0
-            #         hypo.clear()
-            #         remove()
-            #         return 'motion'
-            #         time.sleep(1)
-                    
-            #     elif len(isincosistent.queried_objects) == 0:
-            #         print('The hypothesis is complete and consistent')
-            #         print('The robot is ready to go to the oracle')
-            return 'go_oracle'
-        
+                    print('Checking if it is consistent ..')
+                    isinconsistent = inconsistent()
+                    if len(isinconsistent.queried_objects) != 0:
+                        if str(attempt) in isinconsistent.queried_objects[-1]:
+                            print('The hypothesis is inconsistent')
+                            hint_count = 0
+                            hypo.clear()
+                            time.sleep(1)
+                            return 'motion'
+                        elif str(attempt) not in isinconsistent.queried_objects[-1]:
+                            print('The hypothesis is complete and consistent')
+                            time.sleep(1)
+                            print('The robot is ready to go to the oracle')
+                            return 'go_oracle'
+                    elif len(isinconsistent.queried_objects) == 0:
+                        print('The hypothesis is complete and consistent')
+                        time.sleep(1)
+                        print('The robot is ready to go to the oracle')
+                        return 'go_oracle'
+
         
 class Room(smach.State):
     # this class should simulates what happens when the robot enters in a room searching for
@@ -312,9 +323,6 @@ class Oracle(smach.State):
             # emtpty the list
             hint_count = 0
             hypo.clear()
-            save()
-            # comando per far ripartire lo script hints.py
-            comm_client('start')
             time.sleep(5)
             return 'motion' 
         
