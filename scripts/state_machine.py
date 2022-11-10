@@ -209,26 +209,31 @@ class Motion(smach.State):
 
         else:
             # comando per stoppare hints.py
-            comm_client('stop')
+            # comm_client('stop')
             # counter that keeps track of the hypotheses collected
             attempt += 1
             # we upload the hypothesis into the ontology 
             upload_hypothesis(hypo)
             time.sleep(2)
+            # comm_client('start')
             apply_()
             # reason
             reasoner()
-            comm_client('start')
+            comm_client('stop')
+            # comm_client('start')
             time.sleep(3)
             
             # check completeness and consistency
             print('Checking if it is complete ..')
             iscomplete = complete()
+            print(iscomplete.queried_objects)
             time.sleep(1)
             # valutare se -1 o 0
             if len(iscomplete.queried_objects) == 0:
+                print('The hypothesis is uncomplete')
                 hint_count = 0
                 hypo.clear()
+                comm_client('start')
                 time.sleep(1)
                 return 'motion'
             elif len(iscomplete.queried_objects) != 0:
@@ -236,6 +241,7 @@ class Motion(smach.State):
                     print('The hypothesis is uncomplete')
                     hint_count = 0
                     hypo.clear()
+                    comm_client('start')
                     time.sleep(1)
                     return 'motion'
                 elif str(attempt) in iscomplete.queried_objects[-1]:
@@ -244,11 +250,13 @@ class Motion(smach.State):
                 
                     print('Checking if it is consistent ..')
                     isinconsistent = inconsistent()
+                    print(isinconsistent.queried_objects)
                     if len(isinconsistent.queried_objects) != 0:
                         if str(attempt) in isinconsistent.queried_objects[-1]:
                             print('The hypothesis is inconsistent')
                             hint_count = 0
                             hypo.clear()
+                            comm_client('start')
                             time.sleep(1)
                             return 'motion'
                         elif str(attempt) not in isinconsistent.queried_objects[-1]:
@@ -274,7 +282,7 @@ class Room(smach.State):
         global hint_sub, dim, hints, hint_count, hypo
         print("The robot is looking for hints ..")
         time.sleep(3)
-        # subsccriber to the hint topic
+        # subscriber to the hint topic
         hint_sub = rospy.Subscriber('hint', Hint, hint_callback)
         rospy.wait_for_message('hint', Hint)
         # counter that keeps track of the hints recieved
@@ -320,6 +328,7 @@ class Oracle(smach.State):
         # otherwise if they are not the same   
         elif res.check == False:
             print('No you are wrong, maybe next time you will have better luck')
+            comm_client('start')
             # emtpty the list
             hint_count = 0
             hypo.clear()

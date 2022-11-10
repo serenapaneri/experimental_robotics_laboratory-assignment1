@@ -15,13 +15,19 @@ winning_hypothesis = []
 
 
 def main():
+    """
+      This is the main function of the oracle node. 
+      
+    """
     global armor_interface, hypo
     rospy.init_node('Oracle')
 
+    # armor service
     rospy.wait_for_service('armor_interface_srv')
     print('Waiting for the armor service')
     armor_interface = rospy.ServiceProxy('armor_interface_srv', ArmorDirective)
     
+    # winning hypothesis service
     rospy.Service('winning_hypothesis', Winhypothesis, win_hypo)
     apply_()
     reasoner()
@@ -30,6 +36,7 @@ def main():
     
 def win_hypo(req):
     global hypo
+    # the first four hypothesis are the ones that are complete and consistent
     for i in range(4):
         feasible_hypotheses.append(hypo[i])
         
@@ -43,6 +50,7 @@ def win_hypo(req):
     print('The winning hypothesis is:')
     print('{} with the {} in the {}'.format(winning_hypothesis[0][0], winning_hypothesis[0][1], winning_hypothesis[0][2]))
     
+    # if the ID of the random hypothesis coincides with the winning one
     res = WinhypothesisResponse()
 
     if winning_hypothesis[0][3] == req.ID:
@@ -53,10 +61,14 @@ def win_hypo(req):
     
 
 def load_winning_hypothesis(win):
+    """
+      This functions load the winning hypothesis in the ontology
+    """
     req = ArmorDirectiveReq()
     req.client_name = 'oracle'
     req.reference_name = 'cluedontology'
     
+    # upload the 'who' of the winning hypothesis
     req.command = 'ADD'
     req.primary_command_spec = 'OBJECTPROP'
     req.secondary_command_spec = 'IND'
@@ -64,12 +76,14 @@ def load_winning_hypothesis(win):
     msg = armor_interface(req)
     res = msg.armor_response 
     
+    # upload the 'what' of the winning hypothesis
     req.command = 'ADD'
     req.primary_command_spec = 'OBJECTPROP'
     req.secondary_command_spec = 'IND'
     req.args = ['what','Winning_hypothesis', winning_hypothesis[0][1]]
     res = armor_interface(req)
     
+    # upload the 'where' of the winning hypothesis
     req.command = 'ADD'
     req.primary_command_spec = 'OBJECTPROP'
     req.secondary_command_spec = 'IND'
@@ -81,7 +95,7 @@ def load_winning_hypothesis(win):
 
 def apply_():
     """
-      It is the reasoner of the ontology
+      It is the apply command of armor
     """
     req = ArmorDirectiveReq()
     req.client_name = 'state_machine'

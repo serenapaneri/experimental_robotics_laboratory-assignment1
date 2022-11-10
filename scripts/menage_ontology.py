@@ -6,11 +6,14 @@ from random import randint
 from armor_msgs.srv import *
 from armor_msgs.msg import * 
 
+# lists of the individuals of the cluedo game
 people = ['Rev. Green', 'Prof. Plum', 'Col. Mustard','Msr. Peacock', 'Miss. Scarlett', 'Mrs. White']
 weapons = ['Candlestick', 'Dagger', 'Lead Pipe', 'Revolver', 'Rope', 'Spanner']
 places = ['Conservatory', 'Lounge', 'Kitchen', 'Library', 'Hall', 'Study', 'Ballroom', 'Dining room', 'Billiard room']
+# list of the ID associated to each hypothesis of the game
 ID = ['0000', '0001', '0002', '0003', '0004', '0005', '0006', '0007', '0008', '0009']
 
+# setting the ros parameters of the lists above
 rospy.set_param('people', people)
 rospy.set_param('weapons', weapons)
 rospy.set_param('places', places)
@@ -36,7 +39,7 @@ def main():
     reasoner()
     # disjoint the individuals of all the classes
     disjoint_individuals()
-    
+    # reason
     reasoner()
     
     all_hypotheses()
@@ -64,7 +67,7 @@ def load():
 
 def tbox():
     """
-      This function is used to load all the individuals of all classes in the ontology
+      This function is used to upload all the individuals of all classes in the ontology
     """
     global people, weapons, places
     req = ArmorDirectiveReq()
@@ -74,21 +77,21 @@ def tbox():
     req.primary_command_spec = 'IND'
     req.secondary_command_spec = 'CLASS'
     
-    # instances of the class suspected person
+    # individuals of the class suspected person
     for person in people:
     	req.args = [person, 'PERSON']
     	msg = armor_interface(req)
     	res = msg.armor_response
     print('The suspects have been uploaded in the TBox')
     
-    # instances of the class probable implements
+    # individuals of the class probable implements
     for weapon in weapons:
         req.args = [weapon, 'WEAPON']
         msg = armor_interface(req)
         res = msg.armor_response
     print('The implements have been uploaded in the TBox')
     
-    # instances of the class suspected scenes of murder
+    # individuals of the class suspected scenes of murder
     for place in places:
         req.args = [place, 'PLACE']
         msg = armor_interface(req)
@@ -98,8 +101,8 @@ def tbox():
 
 def disjoint_individuals():
     """
-      This operation needs to be done in order to disjoint the individuals
-      from each other 
+      This operation needs to be done in order to disjoint the individuals,
+      belonging to each class, from each other 
     """
     req = ArmorDirectiveReq()
     req.client_name = 'menage_ontology'
@@ -137,7 +140,7 @@ def reasoner():
 def all_hypotheses():
     """
       This function generates random hypotheses for the game.
-      Some of them are complete and consistent, some of them are unconplete and
+      Some of them are complete and consistent, some of them are uncomplete and
       some of them are complete but inconsistent.
     """
     hypotheses = [[] for _ in range(10)]
@@ -199,23 +202,9 @@ def all_hypotheses():
     
     print(hypotheses)
     
+    # setting the ros parameter of the random hypotheses
     rospy.set_param('hypo', hypotheses)
     return hypotheses
-    
-def save():
-    """
-      It saves the ontology in a new file called final_ontology
-    """
-    req = ArmorDirectiveReq()
-    req.client_name = 'state_machine'
-    req.reference_name = 'cluedontology'
-    req.command = 'SAVE'
-    req.primary_command_spec = ''
-    req.secondary_command_spec = ''
-    req.args = ['/root/ros_ws/src/exprob_ass1/gggg.owl']
-    msg = armor_interface(req)
-    res = msg.armor_response
-    print('The new ontology has been saved under the name final_ontology.owl')
     
 if __name__ == '__main__':
     main()

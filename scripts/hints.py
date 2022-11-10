@@ -2,6 +2,7 @@
 
 import rospy
 import random
+import time
 from exprob_ass1.msg import Hint
 from exprob_ass1.srv import Command
 
@@ -10,18 +11,24 @@ ID = rospy.get_param('ID')
 hint_pub = None
 comm_service = None
 random_hypo = []
-
 start = True
 
 def com(req):
+    global start
     if (req.command == 'start'):
         start = True
+        print('start')
     elif (req.command == 'stop'):
         start = False
+        print('stop')
     return start
 
 def main():
-    global hypo, ID, hint_pub, comm_service
+    """
+      This is the main function of the hints node.
+      It chooses a random hypothesis from the ones avaiable and extracts
+    """
+    global hypo, ID, hint_pub, comm_service, start
     rospy.init_node('hints') 
     
     # hints publisher
@@ -29,57 +36,52 @@ def main():
     comm_service = rospy.Service('comm', Command, com)
     
     rate = rospy.Rate(1)
-    
-    # dovrei aggiungere un controllo qui
     # random hypotheses from the one generates
     
-    if start == True:
-        random_hypo.append(random.choice(hypo[:]))
-        flat_hypo = flatten(random_hypo)
-        print(flat_hypo)
-    
-        # extracting id index
-        id_index = list_index(flat_hypo, ID)
-    
-        # generate the hints of the random hypothesis
-        hints = [[] for _ in range(len(flat_hypo) - 1)]
-        for i in range(len(flat_hypo) - 1):
-            for j in id_index:
-                hints[i].append(flat_hypo[i])
-                hints[i].append(flat_hypo[j])
-                print(hints)
-        
-        rospy.set_param('dim', len(hints))
-        rospy.sleep(5)  
-        while not rospy.is_shutdown():
-            msg = Hint()
-            for i in range(len(hints)):
-                msg.ind = hints[i][0]
-                msg.ID = hints[i][1]
-    
-                # rospy.loginfo(msg)
-                rate.sleep()
-                hint_pub.publish(msg)
-                
-    elif start == False:
-        while not rospy.is_shutdown():
-            print('restarting')
-            # the following code is just for setting the parameter dim 
+    while not rospy.is_shutdown():
+        # if the command recieved is 'start'
+        if start == True:
+            # random hypotheses from the one generates
             random_hypo.append(random.choice(hypo[:]))
             flat_hypo = flatten(random_hypo)
-            print(flat_hypo)
+
+            # extracting id index
             id_index = list_index(flat_hypo, ID)
+    
+            # generate the hints of the random hypothesis
             hints = [[] for _ in range(len(flat_hypo) - 1)]
             for i in range(len(flat_hypo) - 1):
                 for j in id_index:
                     hints[i].append(flat_hypo[i])
                     hints[i].append(flat_hypo[j])
                     print(hints)
-        
+
+            # storing the dimention of the actual dimension of the hints to be recieved
+            # IT IS NOT THE ACTUAL DIMENSION
             rospy.set_param('dim', len(hints))
-            rate.sleep()
+            rospy.sleep(5)  
+            while start == True:
+                # publishing each hint generated from the current random hypothesis
+                msg = Hint()
+                for i in range(len(hints)):
+                    msg.ind = hints[i][0]
+                    msg.ID = hints[i][1]
+    
+                    # rospy.loginfo(msg)
+                    rate.sleep()
+                    hint_pub.publish(msg)
+        
+        # if the command recieved is 'stop'        
+        elif start == False:
+                time.sleep(5)
+                random_hypo.clear()
+                rate.sleep()
+
 
 def flatten(list_):
+    """
+      This function trasforms a nested list into a flat list
+    """
     flat_list = []
     for element in list_:
         if type(element) is list:
