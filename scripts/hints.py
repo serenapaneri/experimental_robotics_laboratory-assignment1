@@ -17,10 +17,8 @@ def com(req):
     global start
     if (req.command == 'start'):
         start = True
-        print('start')
     elif (req.command == 'stop'):
         start = False
-        print('stop')
     return start
 
 def main():
@@ -33,10 +31,10 @@ def main():
     
     # hints publisher
     hint_pub = rospy.Publisher('hint', Hint)
+    # command service
     comm_service = rospy.Service('comm', Command, com)
     
     rate = rospy.Rate(1)
-    # random hypotheses from the one generates
     
     while not rospy.is_shutdown():
         # if the command recieved is 'start'
@@ -58,14 +56,16 @@ def main():
 
             # storing the dimention of the actual dimension of the hints to be recieved
             # IT IS NOT THE ACTUAL DIMENSION
-            rospy.set_param('dim', len(hints))
+            # rospy.set_param('dim', len(hints))
+            dim = len(hints)
             rospy.sleep(5)  
             while start == True:
                 # publishing each hint generated from the current random hypothesis
                 msg = Hint()
-                for i in range(len(hints)):
+                for i in range(dim):
                     msg.ind = hints[i][0]
                     msg.ID = hints[i][1]
+                    msg.dim = dim
     
                     # rospy.loginfo(msg)
                     rate.sleep()

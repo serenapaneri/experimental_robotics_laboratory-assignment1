@@ -15,7 +15,6 @@ weapons = rospy.get_param('weapons')
 places = rospy.get_param('places')
 ID = rospy.get_param('ID')
 
-dim = rospy.get_param('dim')
 hints = []
 hypo = []
 hint_sub = None
@@ -24,6 +23,7 @@ oracle_client = None
 comm_client = None
 hint_count = 0
 attempt = 0
+url = ''
 
 def reasoner():
     """
@@ -91,10 +91,10 @@ def save():
     req.command = 'SAVE'
     req.primary_command_spec = 'INFERENCE'
     req.secondary_command_spec = ''
-    req.args = ['/root/ros_ws/src/exprob_ass1/ffff.owl']
+    req.args = ['/root/ros_ws/src/exprob_ass1/final_ontology_inf.owl']
     msg = armor_interface(req)
     res = msg.armor_response
-    print('The new ontology has been saved under the name final_ontology.owl')
+    print('The new ontology has been saved under the name final_ontology_inf.owl')
     
 
 def room_choice():
@@ -116,6 +116,7 @@ def hint_callback(msg):
     # print("{} with {}".format(msg.ind, msg.ID))
     hints.append(msg.ind)
     hints.append(msg.ID)
+    hints.append(msg.dim)
     return hints
     
 def search(list_, element):
@@ -181,7 +182,7 @@ def upload_hypothesis(hypo_):
             msg = armor_interface(req)
             res = msg.armor_response 
     
-    print("The hypothesis {} has been uploaded".format(attempt))
+    print("The hypothesis has been uploaded")
      
     
 class Motion(smach.State):
@@ -195,12 +196,13 @@ class Motion(smach.State):
                              outcomes=['enter_room','go_oracle', 'motion'])
         
     def execute(self, userdata):
-        global hypo, attempt, comm_client, hint_count
+        global hypo, attempt, comm_client, hint_count, hint_sub, url
         # choosing a random room
         random_room = room_choice()
+        rospy.wait_for_message('hint', Hint)
 
         # if the number of hints collected is less than expected 
-        if hint_count < dim:
+        if hint_count < hints[-1]:
             time.sleep(2)
             # the robot continues to search 
             print("The robot is going to the {} ..".format(random_room))
@@ -208,27 +210,23 @@ class Motion(smach.State):
             return 'enter_room'
 
         else:
-            # comando per stoppare hints.py
-            # comm_client('stop')
             # counter that keeps track of the hypotheses collected
             attempt += 1
-            # we upload the hypothesis into the ontology 
+            # upload the hypothesis into the ontology 
             upload_hypothesis(hypo)
             time.sleep(2)
-            # comm_client('start')
+            # apply
             apply_()
             # reason
             reasoner()
             comm_client('stop')
-            # comm_client('start')
             time.sleep(3)
             
+            url = '<http://www.emarolab.it/cluedo-ontology#Hypothesis{}>'.format(attempt)
             # check completeness and consistency
             print('Checking if it is complete ..')
             iscomplete = complete()
-            print(iscomplete.queried_objects)
             time.sleep(1)
-            # valutare se -1 o 0
             if len(iscomplete.queried_objects) == 0:
                 print('The hypothesis is uncomplete')
                 hint_count = 0
@@ -237,29 +235,28 @@ class Motion(smach.State):
                 time.sleep(1)
                 return 'motion'
             elif len(iscomplete.queried_objects) != 0:
-                if str(attempt) not in iscomplete.queried_objects[-1]:
+                if url not in iscomplete.queried_objects:
                     print('The hypothesis is uncomplete')
                     hint_count = 0
                     hypo.clear()
                     comm_client('start')
                     time.sleep(1)
                     return 'motion'
-                elif str(attempt) in iscomplete.queried_objects[-1]:
+                elif url in iscomplete.queried_objects:
                     print('The hypothesis is complete')
                     time.sleep(1)
                 
                     print('Checking if it is consistent ..')
                     isinconsistent = inconsistent()
-                    print(isinconsistent.queried_objects)
                     if len(isinconsistent.queried_objects) != 0:
-                        if str(attempt) in isinconsistent.queried_objects[-1]:
+                        if url in isinconsistent.queried_objects:
                             print('The hypothesis is inconsistent')
                             hint_count = 0
                             hypo.clear()
                             comm_client('start')
                             time.sleep(1)
                             return 'motion'
-                        elif str(attempt) not in isinconsistent.queried_objects[-1]:
+                        elif url not in isinconsistent.queried_objects:
                             print('The hypothesis is complete and consistent')
                             time.sleep(1)
                             print('The robot is ready to go to the oracle')
@@ -279,18 +276,15 @@ class Room(smach.State):
                              outcomes=['motion'])
         
     def execute(self, userdata):
-        global hint_sub, dim, hints, hint_count, hypo
+        global hint_sub, hints, hint_count, hypo
         print("The robot is looking for hints ..")
         time.sleep(3)
-        # subscriber to the hint topic
-        hint_sub = rospy.Subscriber('hint', Hint, hint_callback)
-        rospy.wait_for_message('hint', Hint)
         # counter that keeps track of the hints recieved
         hint_count += 1
-        # consider the second-last element of the list that corresponds to the last individual added
-        print('HINT FOUND: {}'.format(hints[-2]))
-        # assigning the hint into the right position since they come in a random order
-        classes(hints[-2])
+        # consider the third-last element of the list that corresponds to the last individual added
+        print('HINT FOUND: {}'.format(hints[-3]))
+        # assigning the individual found into the right position since they come in a random order
+        classes(hints[-3])
         time.sleep(2)
         return 'motion'
         
@@ -317,8 +311,8 @@ class Oracle(smach.State):
         print('{} with the {} in the {}'.format(hypo[0], hypo[1], hypo[2]))
         time.sleep(1)
         req = WinhypothesisRequest()
-        # knowing that the ID is always in the second position also hints[1] and hints[3] gives the same result
-        req.ID = hints[5]
+        # knowing that the ID is always in the second position
+        req.ID = hints[-2]
         res = oracle_client(req)
         # if the two strings coincides
         if res.check == True:
@@ -337,7 +331,7 @@ class Oracle(smach.State):
         
         
 def main():
-    global armor_interface, oracle_client, comm_client
+    global armor_interface, oracle_client, comm_client, hint_sub
     rospy.init_node('state_machine')
     sm = smach.StateMachine(outcomes=['game_finished'])
     
@@ -347,7 +341,7 @@ def main():
     armor_interface = rospy.ServiceProxy('armor_interface_srv', ArmorDirective)
     oracle_client = rospy.ServiceProxy('winning_hypothesis', Winhypothesis)
     comm_client = rospy.ServiceProxy('comm', Command)
-    
+    hint_sub = rospy.Subscriber('hint', Hint, hint_callback)
 
     with sm:
         smach.StateMachine.add('Motion', Motion(), 

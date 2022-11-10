@@ -50,6 +50,7 @@ def win_hypo(req):
     print('The winning hypothesis is:')
     print('{} with the {} in the {}'.format(winning_hypothesis[0][0], winning_hypothesis[0][1], winning_hypothesis[0][2]))
     
+    print(winning_hypothesis[0][3])
     # if the ID of the random hypothesis coincides with the winning one
     res = WinhypothesisResponse()
 

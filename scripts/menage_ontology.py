@@ -200,8 +200,6 @@ def all_hypotheses():
     hypotheses[9].append(random.choice(places))
     hypotheses[9].append('0009')
     
-    print(hypotheses)
-    
     # setting the ros parameter of the random hypotheses
     rospy.set_param('hypo', hypotheses)
     return hypotheses
