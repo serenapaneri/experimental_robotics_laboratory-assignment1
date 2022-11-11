@@ -36,13 +36,17 @@ def main():
     
     rate = rospy.Rate(1)
     
-    while not rospy.is_shutdown():
+    # mixing the elements of hypo to generate a random order
+    random.shuffle(hypo)
+    
+    while not rospy.is_shutdown() and len(hypo) > 0:
         # if the command recieved is 'start'
         if start == True:
             # random hypotheses from the one generates
-            random_hypo.append(random.choice(hypo[:]))
+            print(hypo)
+            random_hypo.append(hypo[-1])
+            hypo.pop()
             flat_hypo = flatten(random_hypo)
-
             # extracting id index
             id_index = list_index(flat_hypo, ID)
     

@@ -91,10 +91,10 @@ def save():
     req.command = 'SAVE'
     req.primary_command_spec = 'INFERENCE'
     req.secondary_command_spec = ''
-    req.args = ['/root/ros_ws/src/exprob_ass1/final_ontology_inf.owl']
+    req.args = ['/root/ros_ws/src/exprob_ass1/final_ontology_inferred.owl']
     msg = armor_interface(req)
     res = msg.armor_response
-    print('The new ontology has been saved under the name final_ontology_inf.owl')
+    print('The new ontology has been saved under the name final_ontology_inferred.owl')
     
 
 def room_choice():
@@ -182,7 +182,7 @@ def upload_hypothesis(hypo_):
             msg = armor_interface(req)
             res = msg.armor_response 
     
-    print("The hypothesis has been uploaded")
+    print("The hypothesis {} has been uploaded".format(attempt))
      
     
 class Motion(smach.State):
