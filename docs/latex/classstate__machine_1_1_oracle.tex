@@ -1,0 +1,59 @@
+\hypertarget{classstate__machine_1_1_oracle}{}\doxysection{state\+\_\+machine.\+Oracle Class Reference}
+\label{classstate__machine_1_1_oracle}\index{state\_machine.Oracle@{state\_machine.Oracle}}
+
+
+Class \mbox{\hyperlink{classstate__machine_1_1_oracle}{Oracle}} of the state\+\_\+machine.  
+
+
+
+
+Inheritance diagram for state\+\_\+machine.\+Oracle\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=203pt]{classstate__machine_1_1_oracle__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for state\+\_\+machine.\+Oracle\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=203pt]{classstate__machine_1_1_oracle__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classstate__machine_1_1_oracle_a055fd57c44b8a094b6a3699c2c51fe3b}\label{classstate__machine_1_1_oracle_a055fd57c44b8a094b6a3699c2c51fe3b}} 
+def {\bfseries \+\_\+\+\_\+init\+\_\+\+\_\+} (self)
+\item 
+\mbox{\Hypertarget{classstate__machine_1_1_oracle_a4a24e5d473e92b0c3de7691d3cf54526}\label{classstate__machine_1_1_oracle_a4a24e5d473e92b0c3de7691d3cf54526}} 
+def {\bfseries execute} (self, userdata)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Class \mbox{\hyperlink{classstate__machine_1_1_oracle}{Oracle}} of the state\+\_\+machine. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em } & None \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: None
+\end{DoxyReturn}
+This class should simulate what happens when the robot has collected all the hints that forms a complete and consistent hypothesis, and it tries its guess. This class should inform the robot if the hypothesis found is the winning one or not, and this is done thanks to the oracle\+\_\+service that checks the ID of the hypothesis of the robot with the winning one. If the hypothesis is correct then the game is finished. If it is not then the robot should restart searching for new hints and repeat all the process. Here we have two outcomes\+:
+\begin{DoxyItemize}
+\item game\+\_\+finished, if the hypothesis found is the correct one
+\item motion, if the hypothesis found is wrong. ~\newline
+ 
+\end{DoxyItemize}
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+scripts/\mbox{\hyperlink{state__machine_8py}{state\+\_\+machine.\+py}}\end{DoxyCompactItemize}

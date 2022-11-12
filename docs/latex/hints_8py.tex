@@ -1,0 +1,160 @@
+\hypertarget{hints_8py}{}\doxysection{scripts/hints.py File Reference}
+\label{hints_8py}\index{scripts/hints.py@{scripts/hints.py}}
+
+
+script to publish the hints of the cluedo game and implements a service to send them in a orderly way.  
+
+
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{hints_8py_aa969150ed4a6ff0e02d69435f2f1a332}{hints.\+com}} (req)
+\begin{DoxyCompactList}\small\item\em Callback of the comm\+\_\+service. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{hints_8py_aef6aba64ed2648976f2dadd9df18e313}{hints.\+main}} ()
+\begin{DoxyCompactList}\small\item\em Main function of the node hints where the node is initialized and the hint publisher and the comm service are implemented. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{hints_8py_a19a40f0d32535f0dc458621ed42e5a81}{hints.\+flatten}} (list\+\_\+)
+\begin{DoxyCompactList}\small\item\em Function that flat a list of list. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{hints_8py_ac472f89ec0e2f022c4a3a13e189f97ea}{hints.\+search}} (list1, list2)
+\begin{DoxyCompactList}\small\item\em Function that checks if elements of list2 exist in list1. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{hints_8py_a6dc75e808668fc97ed7a0f8e9ffdfc51}{hints.\+list\+\_\+index}} (list1, list2)
+\begin{DoxyCompactList}\small\item\em Function that returns the indixes in a list. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{hints_8py_a5c354b24836a94e300c6b852a88ca95b}\label{hints_8py_a5c354b24836a94e300c6b852a88ca95b}} 
+{\bfseries hints.\+hint\+\_\+pub} = None
+\item 
+\mbox{\Hypertarget{hints_8py_a895a9b912020d5cf7f44ec7f928195bb}\label{hints_8py_a895a9b912020d5cf7f44ec7f928195bb}} 
+{\bfseries hints.\+comm\+\_\+service} = None
+\item 
+\mbox{\Hypertarget{hints_8py_afde672ff4368cadcdcce74269078602f}\label{hints_8py_afde672ff4368cadcdcce74269078602f}} 
+list {\bfseries hints.\+random\+\_\+hypo} = \mbox{[}$\,$\mbox{]}
+\item 
+\mbox{\Hypertarget{hints_8py_a86d4e682dcb220750bbd3bdcdf5dfed2}\label{hints_8py_a86d4e682dcb220750bbd3bdcdf5dfed2}} 
+bool {\bfseries hints.\+start} = True
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+script to publish the hints of the cluedo game and implements a service to send them in a orderly way. 
+
+\begin{DoxyAuthor}{Author}
+Serena Paneri 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\+0 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+11/11/2022
+\end{DoxyDate}
+Subscribes to\+: ~\newline
+ None
+
+Publishes to\+: ~\newline
+ hint
+
+Serivces\+: ~\newline
+ comm
+
+Client Services\+: ~\newline
+ None
+
+Action Services\+: ~\newline
+ None
+
+Description\+: ~\newline
+ In the hints node the hints pubisher and the comm service are implemented to send the hints in an orderly way. The hypotheses of the game are selected in a pseudo-\/random way and each hints generated from that hypothesis is sended thanks to the hints publisher, that also sends the number of hints generated from the actual hypothesis. All the process is menaged by the comm\+\_\+service that can stop the process of sending the hints of the chosen hypothesis and can restart the process with a new hypothesis from which the hints will be collected and then sended. 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{hints_8py_aa969150ed4a6ff0e02d69435f2f1a332}\label{hints_8py_aa969150ed4a6ff0e02d69435f2f1a332}} 
+\index{hints.py@{hints.py}!com@{com}}
+\index{com@{com}!hints.py@{hints.py}}
+\doxysubsubsection{\texorpdfstring{com()}{com()}}
+{\footnotesize\ttfamily def hints.\+com (\begin{DoxyParamCaption}\item[{}]{req }\end{DoxyParamCaption})}
+
+
+
+Callback of the comm\+\_\+service. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em } & req, Command\+Request \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: start
+\end{DoxyReturn}
+This function recieves the command from the client in the state\+\_\+machine node. When the client commands to start then the start variable is set to True and when it commands to stop the start variable is set to False. \mbox{\Hypertarget{hints_8py_a19a40f0d32535f0dc458621ed42e5a81}\label{hints_8py_a19a40f0d32535f0dc458621ed42e5a81}} 
+\index{hints.py@{hints.py}!flatten@{flatten}}
+\index{flatten@{flatten}!hints.py@{hints.py}}
+\doxysubsubsection{\texorpdfstring{flatten()}{flatten()}}
+{\footnotesize\ttfamily def hints.\+flatten (\begin{DoxyParamCaption}\item[{}]{list\+\_\+ }\end{DoxyParamCaption})}
+
+
+
+Function that flat a list of list. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em } & list\+\_\+ \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: flat\+\_\+list
+\end{DoxyReturn}
+This function trasforms a nested list into a flat list. \mbox{\Hypertarget{hints_8py_a6dc75e808668fc97ed7a0f8e9ffdfc51}\label{hints_8py_a6dc75e808668fc97ed7a0f8e9ffdfc51}} 
+\index{hints.py@{hints.py}!list\_index@{list\_index}}
+\index{list\_index@{list\_index}!hints.py@{hints.py}}
+\doxysubsubsection{\texorpdfstring{list\_index()}{list\_index()}}
+{\footnotesize\ttfamily def hints.\+list\+\_\+index (\begin{DoxyParamCaption}\item[{}]{list1,  }\item[{}]{list2 }\end{DoxyParamCaption})}
+
+
+
+Function that returns the indixes in a list. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em } & list1, list2 \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: index, \mbox{[}\mbox{]}
+\end{DoxyReturn}
+This function is used to search the elements of a list2 in a list1 and return their indexes. ~\newline
+ \mbox{\Hypertarget{hints_8py_aef6aba64ed2648976f2dadd9df18e313}\label{hints_8py_aef6aba64ed2648976f2dadd9df18e313}} 
+\index{hints.py@{hints.py}!main@{main}}
+\index{main@{main}!hints.py@{hints.py}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily def hints.\+main (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Main function of the node hints where the node is initialized and the hint publisher and the comm service are implemented. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em } & None \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: None
+\end{DoxyReturn}
+This is the main function of the hints node and here are implemented the hints pubisher and the comm service, in order to send the hints in an orderly way. The elements of the lists hypo, that has been retrieved from the parameter server, are shuffled in order to be selected in a pseudo-\/random way. With this approached all the hypotheses generated can be selected but without any repetition. Given an hypothesis then all the hints (of that specific hypothesis) are then sended thanks to the publisher with a form like \mbox{[}individuals, ID\mbox{]}. Moreover, also the number of hints generated are published. When all the hints of that hypothesis are recieved from the state\+\_\+machine, then the clients asks to stop sending the hints of that hypothesis, and when it asks to restart the process a new hypothesis is picked and new hints are sended. \mbox{\Hypertarget{hints_8py_ac472f89ec0e2f022c4a3a13e189f97ea}\label{hints_8py_ac472f89ec0e2f022c4a3a13e189f97ea}} 
+\index{hints.py@{hints.py}!search@{search}}
+\index{search@{search}!hints.py@{hints.py}}
+\doxysubsubsection{\texorpdfstring{search()}{search()}}
+{\footnotesize\ttfamily def hints.\+search (\begin{DoxyParamCaption}\item[{}]{list1,  }\item[{}]{list2 }\end{DoxyParamCaption})}
+
+
+
+Function that checks if elements of list2 exist in list1. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em } & list1, list2 \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: True, False
+\end{DoxyReturn}
+This function is used to check if the elements in the list2 are present or not in the list1. 

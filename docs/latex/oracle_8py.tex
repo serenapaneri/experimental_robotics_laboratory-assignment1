@@ -1,0 +1,160 @@
+\hypertarget{oracle_8py}{}\doxysection{scripts/oracle.py File Reference}
+\label{oracle_8py}\index{scripts/oracle.py@{scripts/oracle.py}}
+
+
+script that implements a service to reveal the winning hypothesis of the game.  
+
+
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{oracle_8py_a5ac7249c0bad890a9f43d54c5b413399}{oracle.\+main}} ()
+\begin{DoxyCompactList}\small\item\em Main function of the oracle node. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{oracle_8py_a6d72a861edad42dd29bbe5f7986cffce}{oracle.\+win\+\_\+hypo}} (req)
+\begin{DoxyCompactList}\small\item\em Callback function of the winning\+\_\+hypothesis service. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{oracle_8py_aee49840780a4ca6dce2d077134620df1}{oracle.\+upload\+\_\+winning\+\_\+hypothesis}} (win)
+\begin{DoxyCompactList}\small\item\em Function that upload the individuals of the hypothesis. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{oracle_8py_a58d5cb220ebfa112a57b3e58ed494845}{oracle.\+apply\+\_\+}} ()
+\begin{DoxyCompactList}\small\item\em It is the apply command of armor. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{oracle_8py_a77cf7605d978ced68b22bbe055f213bb}{oracle.\+reasoner}} ()
+\begin{DoxyCompactList}\small\item\em The reasoner of the ontology. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{oracle_8py_ae65bdfff797de70ce66b8bd6262e20ab}\label{oracle_8py_ae65bdfff797de70ce66b8bd6262e20ab}} 
+{\bfseries oracle.\+hypo} = rospy.\+get\+\_\+param(\textquotesingle{}hypo\textquotesingle{})
+\item 
+\mbox{\Hypertarget{oracle_8py_ab0cffff8f97bca1a1e1dfb842a42cb5b}\label{oracle_8py_ab0cffff8f97bca1a1e1dfb842a42cb5b}} 
+{\bfseries oracle.\+armor\+\_\+interface} = None
+\item 
+\mbox{\Hypertarget{oracle_8py_aaa135b50a3a50c49dc89aaa64c06194f}\label{oracle_8py_aaa135b50a3a50c49dc89aaa64c06194f}} 
+list {\bfseries oracle.\+feasible\+\_\+hypotheses} = \mbox{[}$\,$\mbox{]}
+\item 
+\mbox{\Hypertarget{oracle_8py_a72abf01065518c245ad9db86ada0b763}\label{oracle_8py_a72abf01065518c245ad9db86ada0b763}} 
+list {\bfseries oracle.\+winning\+\_\+hypothesis} = \mbox{[}$\,$\mbox{]}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+script that implements a service to reveal the winning hypothesis of the game. 
+
+\begin{DoxyAuthor}{Author}
+Serena Paneri 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\+0 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+11/11/2022
+\end{DoxyDate}
+Subscribes to\+: ~\newline
+ None
+
+Publishes to\+: ~\newline
+ None
+
+Serivces\+: ~\newline
+ winning\+\_\+hypothesis
+
+Client Services\+: ~\newline
+ armor\+\_\+interface\+\_\+srv
+
+Action Services\+: ~\newline
+ None
+
+Description\+: ~\newline
+ In the oracle node the armor client and the winning\+\_\+hypothesis service are implemented. The winnning\+\_\+hypothesis service choses an hypothesis and check if the ID of the hypothesis chosen by the client is the same of the one corresponding to the winning one. The winning hypothesis is then loaded in the ontology. 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{oracle_8py_a58d5cb220ebfa112a57b3e58ed494845}\label{oracle_8py_a58d5cb220ebfa112a57b3e58ed494845}} 
+\index{oracle.py@{oracle.py}!apply\_@{apply\_}}
+\index{apply\_@{apply\_}!oracle.py@{oracle.py}}
+\doxysubsubsection{\texorpdfstring{apply\_()}{apply\_()}}
+{\footnotesize\ttfamily def oracle.\+apply\+\_\+ (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+It is the apply command of armor. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em } & None \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: None
+\end{DoxyReturn}
+This function apply the changes done to the ontology. \mbox{\Hypertarget{oracle_8py_a5ac7249c0bad890a9f43d54c5b413399}\label{oracle_8py_a5ac7249c0bad890a9f43d54c5b413399}} 
+\index{oracle.py@{oracle.py}!main@{main}}
+\index{main@{main}!oracle.py@{oracle.py}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily def oracle.\+main (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Main function of the oracle node. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em } & None \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: None
+\end{DoxyReturn}
+This function is the main function of the node oracle in which the node is initialized, and the armor client and the winning\+\_\+hypothesis service are implemented. \mbox{\Hypertarget{oracle_8py_a77cf7605d978ced68b22bbe055f213bb}\label{oracle_8py_a77cf7605d978ced68b22bbe055f213bb}} 
+\index{oracle.py@{oracle.py}!reasoner@{reasoner}}
+\index{reasoner@{reasoner}!oracle.py@{oracle.py}}
+\doxysubsubsection{\texorpdfstring{reasoner()}{reasoner()}}
+{\footnotesize\ttfamily def oracle.\+reasoner (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+The reasoner of the ontology. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em } & None \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: None
+\end{DoxyReturn}
+This function implements the reasoner of the ontology that needs to be started in order to update the knowledge of the ontology. ~\newline
+ \mbox{\Hypertarget{oracle_8py_aee49840780a4ca6dce2d077134620df1}\label{oracle_8py_aee49840780a4ca6dce2d077134620df1}} 
+\index{oracle.py@{oracle.py}!upload\_winning\_hypothesis@{upload\_winning\_hypothesis}}
+\index{upload\_winning\_hypothesis@{upload\_winning\_hypothesis}!oracle.py@{oracle.py}}
+\doxysubsubsection{\texorpdfstring{upload\_winning\_hypothesis()}{upload\_winning\_hypothesis()}}
+{\footnotesize\ttfamily def oracle.\+upload\+\_\+winning\+\_\+hypothesis (\begin{DoxyParamCaption}\item[{}]{win }\end{DoxyParamCaption})}
+
+
+
+Function that upload the individuals of the hypothesis. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em } & win \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: None
+\end{DoxyReturn}
+This function uploads each individual of the hypothesis in the ontology of the game. \mbox{\Hypertarget{oracle_8py_a6d72a861edad42dd29bbe5f7986cffce}\label{oracle_8py_a6d72a861edad42dd29bbe5f7986cffce}} 
+\index{oracle.py@{oracle.py}!win\_hypo@{win\_hypo}}
+\index{win\_hypo@{win\_hypo}!oracle.py@{oracle.py}}
+\doxysubsubsection{\texorpdfstring{win\_hypo()}{win\_hypo()}}
+{\footnotesize\ttfamily def oracle.\+win\+\_\+hypo (\begin{DoxyParamCaption}\item[{}]{req }\end{DoxyParamCaption})}
+
+
+
+Callback function of the winning\+\_\+hypothesis service. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em } & req, Winhypothesis\+Request \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: res, Winhypothesis\+Response
+\end{DoxyReturn}
+This function implements the callback of the winning\+\_\+hypothesis service that choses an hypothesis randomly from the one that are feasible, so both complete and consistent. The winning hypothesis is then loaded in the ontology. The service winning\+\_\+hypothesis checks if the ID of the hypothesis chosen by the client is the same of the one corresponding to the winning one. 

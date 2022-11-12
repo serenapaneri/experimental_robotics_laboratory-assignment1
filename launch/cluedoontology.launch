@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<launch>
+	
+   <node pkg="armor" type="execute" name="armor_service" args="it.emarolab.armor.ARMORMainService"/>
+   <node name="menage_ontology" pkg="exprob_ass1" type ="menage_ontology.py"/>
+   <node name="hints" pkg="exprob_ass1" type ="hints.py"/>
+   <node name="oracle" pkg="exprob_ass1" type ="oracle.py"/>
+   <node name="state_machine" pkg="exprob_ass1" type ="state_machine.py" output="screen"/>
+      
+   
+</launch>

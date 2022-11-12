@@ -1,0 +1,185 @@
+\hypertarget{menage__ontology_8py}{}\doxysection{scripts/menage\+\_\+ontology.py File Reference}
+\label{menage__ontology_8py}\index{scripts/menage\_ontology.py@{scripts/menage\_ontology.py}}
+
+
+script to load the cluedo\+\_\+ontology, to upload the T\+Box and randomly generate the hypotheses of the game  
+
+
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{menage__ontology_8py_a437c92e7d6a80997b2ccb6ba6abbb25f}{menage\+\_\+ontology.\+main}} ()
+\begin{DoxyCompactList}\small\item\em The main function initializes and handles the client of the A\+R\+M\+OR service. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{menage__ontology_8py_af2012aab0a1c9da889d67ff519162823}{menage\+\_\+ontology.\+load}} ()
+\begin{DoxyCompactList}\small\item\em The load function loads the cluedo\+\_\+ontology. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{menage__ontology_8py_ad9502232ccc51607bbce0240bd0759c4}{menage\+\_\+ontology.\+tbox}} ()
+\begin{DoxyCompactList}\small\item\em The load function loads the cluedo\+\_\+ontology. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{menage__ontology_8py_a5d42a0a39c5398a4bac4c8442a988832}{menage\+\_\+ontology.\+disjoint\+\_\+individuals}} ()
+\begin{DoxyCompactList}\small\item\em The disjoint\+\_\+individuals function disjoints the individuals of a class. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{menage__ontology_8py_a73e68a348010c85077455bdfe8df192b}{menage\+\_\+ontology.\+reasoner}} ()
+\begin{DoxyCompactList}\small\item\em The reasoner of the ontology. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{menage__ontology_8py_aed88901e6d2fcf7ca2372b20e650ad74}{menage\+\_\+ontology.\+all\+\_\+hypotheses}} ()
+\begin{DoxyCompactList}\small\item\em The reasoner of the ontology. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{menage__ontology_8py_a4d4bbe311c31caf9ffae1705289d1e05}\label{menage__ontology_8py_a4d4bbe311c31caf9ffae1705289d1e05}} 
+list {\bfseries menage\+\_\+ontology.\+people} = \mbox{[}\textquotesingle{}Rev. Green\textquotesingle{}, \textquotesingle{}Prof. Plum\textquotesingle{}, \textquotesingle{}Col. Mustard\textquotesingle{},\textquotesingle{}Msr. Peacock\textquotesingle{}, \textquotesingle{}Miss. Scarlett\textquotesingle{}, \textquotesingle{}Mrs. White\textquotesingle{}\mbox{]}
+\item 
+\mbox{\Hypertarget{menage__ontology_8py_a9264400ba35f0e725044f8c444965cc9}\label{menage__ontology_8py_a9264400ba35f0e725044f8c444965cc9}} 
+list {\bfseries menage\+\_\+ontology.\+weapons} = \mbox{[}\textquotesingle{}Candlestick\textquotesingle{}, \textquotesingle{}Dagger\textquotesingle{}, \textquotesingle{}Lead Pipe\textquotesingle{}, \textquotesingle{}Revolver\textquotesingle{}, \textquotesingle{}Rope\textquotesingle{}, \textquotesingle{}Spanner\textquotesingle{}\mbox{]}
+\item 
+\mbox{\Hypertarget{menage__ontology_8py_ad27ff792fc79f941f9516d00d70bdb6a}\label{menage__ontology_8py_ad27ff792fc79f941f9516d00d70bdb6a}} 
+list {\bfseries menage\+\_\+ontology.\+places} = \mbox{[}\textquotesingle{}Conservatory\textquotesingle{}, \textquotesingle{}Lounge\textquotesingle{}, \textquotesingle{}Kitchen\textquotesingle{}, \textquotesingle{}Library\textquotesingle{}, \textquotesingle{}Hall\textquotesingle{}, \textquotesingle{}Study\textquotesingle{}, \textquotesingle{}Ballroom\textquotesingle{}, \textquotesingle{}Dining room\textquotesingle{}, \textquotesingle{}Billiard room\textquotesingle{}\mbox{]}
+\item 
+\mbox{\Hypertarget{menage__ontology_8py_a2db256f481a72361e1b391f7ab434e40}\label{menage__ontology_8py_a2db256f481a72361e1b391f7ab434e40}} 
+list {\bfseries menage\+\_\+ontology.\+ID} = \mbox{[}\textquotesingle{}0000\textquotesingle{}, \textquotesingle{}0001\textquotesingle{}, \textquotesingle{}0002\textquotesingle{}, \textquotesingle{}0003\textquotesingle{}, \textquotesingle{}0004\textquotesingle{}, \textquotesingle{}0005\textquotesingle{}, \textquotesingle{}0006\textquotesingle{}, \textquotesingle{}0007\textquotesingle{}, \textquotesingle{}0008\textquotesingle{}, \textquotesingle{}0009\textquotesingle{}\mbox{]}
+\item 
+\mbox{\Hypertarget{menage__ontology_8py_a3bc2ef82aea00da2bf3c673ded62cc1c}\label{menage__ontology_8py_a3bc2ef82aea00da2bf3c673ded62cc1c}} 
+{\bfseries menage\+\_\+ontology.\+armor\+\_\+interface} = None
+\item 
+\mbox{\Hypertarget{menage__ontology_8py_a62c5d7420314b9e2480eff32fd924c94}\label{menage__ontology_8py_a62c5d7420314b9e2480eff32fd924c94}} 
+list {\bfseries menage\+\_\+ontology.\+hypotheses} = \mbox{[}$\,$\mbox{]}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+script to load the cluedo\+\_\+ontology, to upload the T\+Box and randomly generate the hypotheses of the game 
+
+\begin{DoxyAuthor}{Author}
+Serena Paneri 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\+0 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+11/11/2022
+\end{DoxyDate}
+Subscribes to\+: ~\newline
+ None
+
+Publishes to\+: ~\newline
+ None
+
+Serivces\+: ~\newline
+ None
+
+Client Services\+: ~\newline
+ armor\+\_\+interface\+\_\+srv
+
+Action Services\+: ~\newline
+ None
+
+Description\+: ~\newline
+ In this node are defined all the list of individuals, divided in people, weapons and places. In addition we also have a list that contains all the possible ID associated to each hypothesis of the game, and the values of all those lists are stored in a parameter server. This node contains a client for the A\+R\+M\+OR service, to be able to menage the cluedo\+\_\+ontology. In this node, in particular, the cluedo\+\_\+ontology is loaded, all the individuals of the game are upload in the ontology, thus forming the T\+Box of the ontology, the individuals of each class are disjoint from each other and the resoner is started to update the knowledge. Finally a set of random hypothesis is generated and it includes four complete and consistent hypotheses, three uncomplete hypotheses and three complete but inconsistent hypotheses. Then these hypotheses are stored into a parameter server. 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{menage__ontology_8py_aed88901e6d2fcf7ca2372b20e650ad74}\label{menage__ontology_8py_aed88901e6d2fcf7ca2372b20e650ad74}} 
+\index{menage\_ontology.py@{menage\_ontology.py}!all\_hypotheses@{all\_hypotheses}}
+\index{all\_hypotheses@{all\_hypotheses}!menage\_ontology.py@{menage\_ontology.py}}
+\doxysubsubsection{\texorpdfstring{all\_hypotheses()}{all\_hypotheses()}}
+{\footnotesize\ttfamily def menage\+\_\+ontology.\+all\+\_\+hypotheses (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+The reasoner of the ontology. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em } & None \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: hypotheses
+\end{DoxyReturn}
+This function generates random hypotheses for the game. Some of them are complete and consistent, some of them are uncomplete and some of them are complete but inconsistent. These hypotheses are then stored in the parameter server called hypo. \mbox{\Hypertarget{menage__ontology_8py_a5d42a0a39c5398a4bac4c8442a988832}\label{menage__ontology_8py_a5d42a0a39c5398a4bac4c8442a988832}} 
+\index{menage\_ontology.py@{menage\_ontology.py}!disjoint\_individuals@{disjoint\_individuals}}
+\index{disjoint\_individuals@{disjoint\_individuals}!menage\_ontology.py@{menage\_ontology.py}}
+\doxysubsubsection{\texorpdfstring{disjoint\_individuals()}{disjoint\_individuals()}}
+{\footnotesize\ttfamily def menage\+\_\+ontology.\+disjoint\+\_\+individuals (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+The disjoint\+\_\+individuals function disjoints the individuals of a class. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em } & None \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: None
+\end{DoxyReturn}
+This operation needs to be done in order to disjoint the individuals belonging to each class, from each other. \mbox{\Hypertarget{menage__ontology_8py_af2012aab0a1c9da889d67ff519162823}\label{menage__ontology_8py_af2012aab0a1c9da889d67ff519162823}} 
+\index{menage\_ontology.py@{menage\_ontology.py}!load@{load}}
+\index{load@{load}!menage\_ontology.py@{menage\_ontology.py}}
+\doxysubsubsection{\texorpdfstring{load()}{load()}}
+{\footnotesize\ttfamily def menage\+\_\+ontology.\+load (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+The load function loads the cluedo\+\_\+ontology. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em } & None \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: None
+\end{DoxyReturn}
+This function is used to load the cluedo\+\_\+ontology. \mbox{\Hypertarget{menage__ontology_8py_a437c92e7d6a80997b2ccb6ba6abbb25f}\label{menage__ontology_8py_a437c92e7d6a80997b2ccb6ba6abbb25f}} 
+\index{menage\_ontology.py@{menage\_ontology.py}!main@{main}}
+\index{main@{main}!menage\_ontology.py@{menage\_ontology.py}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily def menage\+\_\+ontology.\+main (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+The main function initializes and handles the client of the A\+R\+M\+OR service. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em } & None \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: None
+\end{DoxyReturn}
+This is the main function of the node where the node is initialized and handles the client of the A\+R\+M\+OR service. It also calls the other functions to load the cluedo\+\_\+ontology, to upload the Tbox and then it starts the reasoner menage the knowledge of the ontology. \mbox{\Hypertarget{menage__ontology_8py_a73e68a348010c85077455bdfe8df192b}\label{menage__ontology_8py_a73e68a348010c85077455bdfe8df192b}} 
+\index{menage\_ontology.py@{menage\_ontology.py}!reasoner@{reasoner}}
+\index{reasoner@{reasoner}!menage\_ontology.py@{menage\_ontology.py}}
+\doxysubsubsection{\texorpdfstring{reasoner()}{reasoner()}}
+{\footnotesize\ttfamily def menage\+\_\+ontology.\+reasoner (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+The reasoner of the ontology. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em } & None \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: None
+\end{DoxyReturn}
+This function implements the reasoner of the ontology that needs to be started in order to update the knowledge of the ontology. \mbox{\Hypertarget{menage__ontology_8py_ad9502232ccc51607bbce0240bd0759c4}\label{menage__ontology_8py_ad9502232ccc51607bbce0240bd0759c4}} 
+\index{menage\_ontology.py@{menage\_ontology.py}!tbox@{tbox}}
+\index{tbox@{tbox}!menage\_ontology.py@{menage\_ontology.py}}
+\doxysubsubsection{\texorpdfstring{tbox()}{tbox()}}
+{\footnotesize\ttfamily def menage\+\_\+ontology.\+tbox (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+The load function loads the cluedo\+\_\+ontology. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em } & None \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: None
+\end{DoxyReturn}
+This function is used to upload all the individuals of all classes in the ontology. 
