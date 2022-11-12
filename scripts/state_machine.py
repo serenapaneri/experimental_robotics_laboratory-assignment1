@@ -172,7 +172,7 @@ def save():
     req.command = 'SAVE'
     req.primary_command_spec = 'INFERENCE'
     req.secondary_command_spec = ''
-    req.args = ['/root/ros_ws/src/exprob_ass1/hhhhhhh.owl']
+    req.args = ['/root/ros_ws/src/exprob_ass1/final_ontology_inferred.owl']
     msg = armor_interface(req)
     res = msg.armor_response
     print('The new ontology has been saved under the name final_ontology_inferred.owl')
