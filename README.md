@@ -8,7 +8,7 @@ Moreover, it is asked to implement the behavioral software architecture of the p
 
 ## Software architecture
 ### Component diagram
-![alt text](https://github.com/serenapaneri/exprob_ass1/tree/main/images/component_diagram.jpg)
+![Alt text](/images/component_diagram.jpg?raw=true)
 With the component diagram it is possible to see the overall behavior and how the whole architecture is organized.
 In this diagrams are shown, besides the armor service, the four nodes of which the package is composed.
 
@@ -28,10 +28,10 @@ There are three different states in which the robot could be:
 - armor_service: Thanks to the armor service it is possible to 'interact' with the cluedo ontology performing some operations like loading and saving the ontology, uploading the hints beloging to each hypothesis, disjoint the individuals, performing the query and starting the reasoner of the ontology. 
 
 ### State diagram
-![alt text](https://github.com/serenapaneri/exprob_ass1/tree/main/images/state_diagram.jpg)
+![Alt text](/images/state_diagram.jpg?raw=true)
 
 ### Temporal diagram
-![alt text](https://github.com/serenapaneri/exprob_ass1/tree/main/images/temporal_diagram.jpg)
+![Alt text](/images/temporal_diagram.jpg?raw=true)
 
 ### Messages, Services and RosParameters
 
@@ -41,15 +41,15 @@ There are three different states in which the robot could be:
 ### Display robot's behavior
 
 ## Behavior of the package
-![alt text](https://github.com/serenapaneri/exprob_ass1/tree/main/images/motion.png)
-![alt text](https://github.com/serenapaneri/exprob_ass1/tree/main/images/room.png)
-![alt text](https://github.com/serenapaneri/exprob_ass1/tree/main/images/oracle.png)
-![alt text](https://github.com/serenapaneri/exprob_ass1/tree/main/images/game_finished.png)
+![Alt text](/images/motion.png?raw=true)
+![Alt text](/images/room.png?raw=true)
+![Alt text](/images/oracle.png?raw=true)
+![Alt text](/images/game_finished.png?raw=true)
 
-![alt text](https://github.com/serenapaneri/exprob_ass1/tree/main/images/uncomplete.png)
-![alt text](https://github.com/serenapaneri/exprob_ass1/tree/main/images/inconsistent.png)
-![alt text](https://github.com/serenapaneri/exprob_ass1/tree/main/images/attempt.png)
-![alt text](https://github.com/serenapaneri/exprob_ass1/tree/main/images/winning_hypo.png)
+![Alt text](/images/uncomplete.png?raw=true)
+![Alt text](/images/inconsistent.png?raw=true)
+![Alt text](/images/attempt.png?raw=true)
+![Alt text](/images/winning_hypo.png?raw=true)
 
 
 ## Working hypothesis and environment
