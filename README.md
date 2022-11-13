@@ -97,7 +97,7 @@ and then simply run the catkin make in your ROS workspace:
 ```
 Before executing the project you should install, if they are not already installed the following packages:
 - [**ARMOR**](https://github.com/EmaroLab/armor.git)
-- [**ros_smach **](https://github.com/ros/executive_smach)
+- [**ros_smach**](https://github.com/ros/executive_smach)
 - [**smach_viewer**](https://github.com/ros-visualization/executive_smach_visualization.git)
 ### Running procedure
 After you complete the two steps aforementioned you can finally run the whole program by typing in the terminal:
@@ -113,7 +113,7 @@ thanks to the launch file [**cluedontology.launch**](https://github.com/serenapa
 In the meanwile that the code is running, you can see in which state the robot is in that moment, thanks to the smach_viewer.
 To do so, type in the terminal:
 ```
-    rosrun smach_viewer smach_viewer.py
+  rosrun smach_viewer smach_viewer.py
 ```
 In the paragraph below you can see how the smach_viewer will look like.
 
