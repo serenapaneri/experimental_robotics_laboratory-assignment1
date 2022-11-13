@@ -50,8 +50,11 @@ If the hypothesis is complete and consistent, then the state_machine asks to the
 In the msg folder you can find the [**Hint.msg**](https://github.com/serenapaneri/exprob_ass1/tree/main/msg/Hints.msg) message.
 The message, that is sent thanks to the hint publisher, has the following structure: 
 > string ind
+
 > string ID
+
 > int64 dim
+
 So, the message contains an idividual of the current hypothesis, the ID associated to the current hypothesis, and the number of hints that have been extctracted from that hypothesis.
 #### Services
 In the srv folder you can find Command.srv and Winhypothesis.srv.
@@ -59,6 +62,7 @@ In the srv folder you can find Command.srv and Winhypothesis.srv.
 
 **Request**
 > string command
+
 **Response**
 > bool ok
 
@@ -67,6 +71,7 @@ So, it contains the request done by the client that is a string, and the respons
 
 **Request**
 > string ID
+
 **Response**
 > bool check
 
@@ -84,25 +89,25 @@ Within the code you can notice the use of five ROS parameter server.
 ### Installation
 To install the package you just need to clone the repository by typing in the terminal:
 ```
-    git clone https://github.com/serenapaneri/exprob_ass1.git
+  git clone https://github.com/serenapaneri/exprob_ass1.git
 ```
 and then simply run the catkin make in your ROS workspace:
 ```
-    catkin_make
+  catkin_make
 ```
 Before executing the project you should install, if they are not already installed the following packages:
 - [**ARMOR**](https://github.com/EmaroLab/armor.git)
-- [**ROS smach **](https://github.com/ros/executive_smach)
+- [**ros_smach **](https://github.com/ros/executive_smach)
 - [**smach_viewer**](https://github.com/ros-visualization/executive_smach_visualization.git)
 ### Running procedure
 After you complete the two steps aforementioned you can finally run the whole program by typing in the terminal:
 ```
-    roscore &
+  roscore &
 ```
 ```
-    roslaunch exprob_ass1 cluedontology.launch
+  roslaunch exprob_ass1 cluedoontology.launch
 ```
-thanks to the launch file [**cluedontology.launch**](https://github.com/serenapaneri/exprob_ass1/tree/main/launch/cluedontology.launch) contained in the launch folder of the package.
+thanks to the launch file [**cluedontology.launch**](https://github.com/serenapaneri/exprob_ass1/blob/main/launch/cluedoontology.launch) contained in the launch folder of the package.
 
 ### Display robot's behavior
 In the meanwile that the code is running, you can see in which state the robot is in that moment, thanks to the smach_viewer.
@@ -116,34 +121,34 @@ In the paragraph below you can see how the smach_viewer will look like.
 Below are displayed the various states in which the robot can be found and those are well displayed thanks to the smach_viewer:
 ![Alt text](/images/motion.png?raw=true)
 
-The robot is in the [**Motion**] states, simulating its research of hints in order to form hypothesis to solve the crime. It is also the states in which there is the query procedure done with ARMOR, in order to check if the current hypothesis is complete and consistent.
+The robot is in the **Motion** states, simulating its research of hints in order to form hypothesis to solve the crime. It is also the states in which there is the query procedure done with ARMOR, in order to check if the current hypothesis is complete and consistent.
 
 ![Alt text](/images/room.png?raw=true)
 
-The robot is in the [**Room**] states, in which it simulates the collection of hints. Indeed each time it is in that particular state, a new hint is collected.
+The robot is in the **Room** states, in which it simulates the collection of hints. Indeed each time it is in that particular state, a new hint is collected.
 
 ![Alt text](/images/oracle.png?raw=true)
 
-The robot is in the [**Oracle**] state, in which it asks to the oracle if the hypothesis it has formulated coincides with the winning one or not.
+The robot is in the **Oracle** state, in which it asks to the oracle if the hypothesis it has formulated coincides with the winning one or not.
 
 ![Alt text](/images/game_finished.png?raw=true)
 
-If the robot is in this [**game_finished**] state, it means that its guessing was right and the game is over.
+If the robot is in this **game_finished** state, it means that its guessing was right and the game is over.
 
 Below you can see the all the possbile cases of hints reseach:
-- The hints collected form an [**uncomplete**] hypothesis:
+- The hints collected form an **uncomplete** hypothesis:
 
 ![Alt text](/images/uncomplete.png?raw=true)
 
-- The hints collected form a complete but [**inconsistent**] hypothesis:
+- The hints collected form a complete but **inconsistent** hypothesis:
 
 ![Alt text](/images/inconsistent.png?raw=true)
 
-- The hints collected form a complete and consisten hypothesis, but once the robot arrives in the Oracle room it founds that it is [**not the correct one**]:
+- The hints collected form a complete and consisten hypothesis, but once the robot arrives in the Oracle room it founds that it is **not the correct one**:
 
 ![Alt text](/images/attempt.png?raw=true)
 
-- The hints collected form a complete and consisten hypothesis and this hypothesis is also the [**winning one**]:
+- The hints collected form a complete and consisten hypothesis and this hypothesis is also the **winning one**:
 
 ![Alt text](/images/winning_hypo.png?raw=true)
 
