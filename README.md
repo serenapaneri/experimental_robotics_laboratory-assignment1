@@ -8,7 +8,7 @@ Moreover, it is asked to implement the behavioral software architecture of the p
 
 ## Software architecture
 ### Component diagram
-![Alt text](/images/component_diagram.jpg?raw=true)
+![Alt text](/images/comp_diagram.jpg?raw=true)
 With the component diagram it is possible to see the overall behavior and how the whole architecture is organized.
 In this diagrams are shown, besides the armor service, the four nodes of which the package is composed.
 
@@ -29,13 +29,48 @@ There are three different states in which the robot could be:
 
 ### State diagram
 ![Alt text](/images/state_diagram.jpg?raw=true)
+In the state diagram are shown all the states in which the robot could be and moreover the outcomes of the various state. 
+Thete is the Motion state in which the robot should simulate the movments around the rooms of the cluedo house. Moreover in this state the robot checks how many hints have been collected in the current attempt and, after collecting all the hints, thus forming an hypothesis, the completeness and the consistency of the hypothesis is checked. 
+If the hypothesis is uncomplete or inconsistent, the outcome of the state is the state itself. Instead if the hypothesis is complete and consistent, the outcome of the state is the Oracle.
+However, if the robot has not collected enough hints to create an hypothesis the outcome of the state is Room.
+In the room state the robot simply simulate the collection of hints: each time it is in this state, a new hint is collected, and the only outcome is the motion state.
+In the Oracle state the oracle checks if the ID of the current hypothesis coincides with the winning one, if it is not the outocomes is Motion and the process of searching starts all over again. Instead if the two IDs coincides the robot goes into the final state that is game_finished.
 
 ### Temporal diagram
-![Alt text](/images/temporal_diagram.jpg?raw=true)
+![Alt text](/images/temp_diagram.jpg?raw=true)
+In the temporal diagram is possible to see how the other nodes are called and menage by the smach state machine. 
+Indeed, at first the state machine asks for hints, that are exctracted from a random hypothesis, whose in turn, has been selected by the whole lists of hypotheses generated in the menage_ontology node. After the request of the state machine the hints are published through the hints publisher of the node hints.
+After collecting all the hints, thus composing an hypothesis, the state_machine asks the ARMOR service to check if the current hypothesis is complete and consistent. 
+If the hypothesis is complete and consistent, then the state_machine asks to the oracle node to check, through the service winning_hypothesis, if the ID of the current hypothesis and the ID of the winning one, coincides or not.
 
 ### Messages, Services and RosParameters
+#### Messages
+In the msg folder you can find the [**Hint.msg**](https://github.com/serenapaneri/exprob_ass1/tree/main/msg/Hints.msg) message.
+The message, that is sent thanks to the hint publisher, has the following structure: 
+string ind
+string ID
+int64 dim
+So, the message contains an idividual of the current hypothesis, the ID associated to the current hypothesis, and the number of hints that have been extctracted from that hypothesis.
+#### Services
+In the srv folder you can find Command.srv and Winhypothesis.srv.
+- [**Command.srv**](https://github.com/serenapaneri/exprob_ass1/tree/main/srv/Command.srv): The structure is the one below 
+string command
+---
+bool ok
+So, it contains the request done by the client that is a string, and the response is a bool.
+- [**Winhypothesis.srv**](https://github.com/serenapaneri/exprob_ass1/tree/main/srv/Winhypothesis.srv): The structure is the one below
+string ID
+---
+bool check
+This service is implemented in the oracle node and simply check if two strings (IDs) coincides or not.
 
-
+#### RosParameters
+Within the code you can notice the use of five ROS parameter server.
+- people : in this parameter server the list of possible murders is stored
+- weapons : in this parameter server the list of possible murder weapons is stored
+- places : in this parameter server the list of possible scene of crime is stored
+- ID : in this parameter server the list of all the ID, each one associated to one hypothesis, is stored
+- hypo : in this parameter server is contained the list of the random hypothesis selected for the current game session.
 
 ## Installation and running procedures
 ### Display robot's behavior
