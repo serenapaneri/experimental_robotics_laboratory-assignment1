@@ -1,14 +1,15 @@
 # First Assignment of the Experimental Robotics Laboratory course (Robotics Engineering/ JEMARO, Unige)
 
-## General infomration
+## Brief introduction
 This ROS package contains the implementation of the first assignment of the Experimental Robotics Laboratory. The aim of this project is to implement a vanilla version of the cluedo game. 
 Indeed there is a robot that simulates, just as in the game, the search for a murderer, the murder weapon and the crime scene.
-The robot, during its research, moves around the rooms of the cluedo house with the purpuse of collecting clues to solve the mistery. Indeed, collecting these hints it is able to formulate hypotheses, thus trying to find the winning one that will be revealed by the oracle of the game (the envelope of the real game).
+The robot, during its research, moves around the rooms of the cluedo house with the purpuse of collecting clues to solve the mistery. Indeed, collecting these hints, it is able to formulate hypotheses, thus trying to find the winning one that will be revealed by the oracle of the game (the envelope of the real game).
 Moreover, it is asked to implement the behavioral software architecture of the project and it is also required to deal with an ontology.
 
 ## Software architecture
 ### Component diagram
 ![Alt text](/images/comp_diagram.jpg?raw=true)
+
 With the component diagram it is possible to see the overall behavior and how the whole architecture is organized.
 In this diagrams are shown, besides the armor service, the four nodes of which the package is composed.
 
@@ -18,7 +19,7 @@ In particular, the operation performed, thanks to this service, are the loading 
 Moreover in this node the hypotheses of the game are generated randomly, some of them are complete and consistent, some are uncomplete and some are complete but inconsistent. These hypotheses are then stored in a parameter server.
 - [**hints**](https://github.com/serenapaneri/exprob_ass1/tree/main/scripts/hints.py): In this ROS node the publisher of the hints and the command service are implemented, in order to send the hints in an orderly way.
 After retrieving the hypotheses of the game from the ros parameter server, the hypotheses of the game are selected in a pseudo-random way. Indeed the list of hypotheses is shuffled and each time that the command client asks for a new set of hints, a new hypothesis is taken from that list. From the current hypothesis, all the hints contained are extracted and sent, via ROS message, thanks to the hint publisher. The ROS message, besides the individuals and the ID of the current hypothesis, also contains the number of hints extracted from that specific hypothesis in order to advertise the state_machine about the number of hints that needs to be collected. 
-- [**oracle**](https://github.com/serenapaneri/exprob_ass1/tree/main/scripts/oracle.py): This ROS node contains the armor client and the winning_hypothesis service. After retrieving the hypotheses from the ROS parameter, an hypothesis is randomly picked from the feasible ones (meaning complete and consistent hypotheses) and that will be the winning hypothesis of the game. In particular the winning_hypothesis service is implemented that is used to check if the ID of the winning hypothesis is the same or not of the current hypothesis of the game.
+- [**oracle**](https://github.com/serenapaneri/exprob_ass1/tree/main/scripts/oracle.py): This ROS node contains the armor client and the winning_hypothesis service. After retrieving the hypotheses from the ROS parameter, an hypothesis is randomly picked from the feasible ones (meaning complete and consistent hypotheses) and that will be the winning hypothesis of the game. In particular, the winning_hypothesis service is implemented, and it is used to check if the ID of the winning hypothesis is the same or not of the current hypothesis of the game.
 Then the winning hypothesis is loaded in the ontology, thanks to the armor service.
 - [**state_machine**](https://github.com/serenapaneri/exprob_ass1/tree/main/scripts/state_machine.py): In this node a state machine built with the smach package is implemented.
 There are three different states in which the robot could be:
@@ -29,6 +30,7 @@ There are three different states in which the robot could be:
 
 ### State diagram
 ![Alt text](/images/state_diagram.jpg?raw=true)
+
 In the state diagram are shown all the states in which the robot could be and moreover the outcomes of the various state. 
 Thete is the Motion state in which the robot should simulate the movments around the rooms of the cluedo house. Moreover in this state the robot checks how many hints have been collected in the current attempt and, after collecting all the hints, thus forming an hypothesis, the completeness and the consistency of the hypothesis is checked. 
 If the hypothesis is uncomplete or inconsistent, the outcome of the state is the state itself. Instead if the hypothesis is complete and consistent, the outcome of the state is the Oracle.
@@ -47,21 +49,27 @@ If the hypothesis is complete and consistent, then the state_machine asks to the
 #### Messages
 In the msg folder you can find the [**Hint.msg**](https://github.com/serenapaneri/exprob_ass1/tree/main/msg/Hints.msg) message.
 The message, that is sent thanks to the hint publisher, has the following structure: 
-string ind
-string ID
-int64 dim
+> string ind
+> string ID
+> int64 dim
 So, the message contains an idividual of the current hypothesis, the ID associated to the current hypothesis, and the number of hints that have been extctracted from that hypothesis.
 #### Services
 In the srv folder you can find Command.srv and Winhypothesis.srv.
-- [**Command.srv**](https://github.com/serenapaneri/exprob_ass1/tree/main/srv/Command.srv): The structure is the one below 
-string command
----
-bool ok
+- [**Command.srv**](https://github.com/serenapaneri/exprob_ass1/tree/main/srv/Command.srv): The structure is the one below:
+
+**Request**
+> string command
+**Response**
+> bool ok
+
 So, it contains the request done by the client that is a string, and the response is a bool.
-- [**Winhypothesis.srv**](https://github.com/serenapaneri/exprob_ass1/tree/main/srv/Winhypothesis.srv): The structure is the one below
-string ID
----
-bool check
+- [**Winhypothesis.srv**](https://github.com/serenapaneri/exprob_ass1/tree/main/srv/Winhypothesis.srv): The structure is the one below:
+
+**Request**
+> string ID
+**Response**
+> bool check
+
 This service is implemented in the oracle node and simply check if two strings (IDs) coincides or not.
 
 #### RosParameters
@@ -73,33 +81,90 @@ Within the code you can notice the use of five ROS parameter server.
 - hypo : in this parameter server is contained the list of the random hypothesis selected for the current game session.
 
 ## Installation and running procedures
+### Installation
+To install the package you just need to clone the repository by typing in the terminal:
+```
+    git clone https://github.com/serenapaneri/exprob_ass1.git
+```
+and then simply run the catkin make in your ROS workspace:
+```
+    catkin_make
+```
+Before executing the project you should install, if they are not already installed the following packages:
+- [**ARMOR**](https://github.com/EmaroLab/armor.git)
+- [**ROS smach **](https://github.com/ros/executive_smach)
+- [**smach_viewer**](https://github.com/ros-visualization/executive_smach_visualization.git)
+### Running procedure
+After you complete the two steps aforementioned you can finally run the whole program by typing in the terminal:
+```
+    roscore &
+```
+```
+    roslaunch exprob_ass1 cluedontology.launch
+```
+thanks to the launch file [**cluedontology.launch**](https://github.com/serenapaneri/exprob_ass1/tree/main/launch/cluedontology.launch) contained in the launch folder of the package.
+
 ### Display robot's behavior
+In the meanwile that the code is running, you can see in which state the robot is in that moment, thanks to the smach_viewer.
+To do so, type in the terminal:
+```
+    rosrun smach_viewer smach_viewer.py
+```
+In the paragraph below you can see how the smach_viewer will look like.
 
 ## Behavior of the package
+Below are displayed the various states in which the robot can be found and those are well displayed thanks to the smach_viewer:
 ![Alt text](/images/motion.png?raw=true)
+
+The robot is in the [**Motion**] states, simulating its research of hints in order to form hypothesis to solve the crime. It is also the states in which there is the query procedure done with ARMOR, in order to check if the current hypothesis is complete and consistent.
+
 ![Alt text](/images/room.png?raw=true)
+
+The robot is in the [**Room**] states, in which it simulates the collection of hints. Indeed each time it is in that particular state, a new hint is collected.
+
 ![Alt text](/images/oracle.png?raw=true)
+
+The robot is in the [**Oracle**] state, in which it asks to the oracle if the hypothesis it has formulated coincides with the winning one or not.
+
 ![Alt text](/images/game_finished.png?raw=true)
 
+If the robot is in this [**game_finished**] state, it means that its guessing was right and the game is over.
+
+Below you can see the all the possbile cases of hints reseach:
+- The hints collected form an [**uncomplete**] hypothesis:
+
 ![Alt text](/images/uncomplete.png?raw=true)
+
+- The hints collected form a complete but [**inconsistent**] hypothesis:
+
 ![Alt text](/images/inconsistent.png?raw=true)
+
+- The hints collected form a complete and consisten hypothesis, but once the robot arrives in the Oracle room it founds that it is [**not the correct one**]:
+
 ![Alt text](/images/attempt.png?raw=true)
+
+- The hints collected form a complete and consisten hypothesis and this hypothesis is also the [**winning one**]:
+
 ![Alt text](/images/winning_hypo.png?raw=true)
 
 
 ## Working hypothesis and environment
+In this vanilla version of the cluedo game there can be ten possible hypthesis that the user can found within the game. There are four complete and consistent hypothesis, three uncomplete and three complete but inconsistent. 
+Those hypotheses are randomly generated, so each time the user starts a new game session, different hypotheses will be present.
+There is not a real environment, in the sense of visual simulation, but the behavior of the game can be followed by reading what's happening in the terminal. The environment is composed by rooms and to simulate the motion between rooms, a waiting procedure has been implememted.
 
 ### System's features
+The whole implementation can be easily changed in order to possible adaptation in future assignments. This is also possbile thanks to its modularity of the program, since each node has a stand alone implementation. 
+Moreover the duration of the game is limited to at maximum the number of hypotheses present in the game, since those hypotheses, once they appear one time in the game, are deleted from the list avoiding repetitions that would lead to a very long game.
+Moreover when the game is finished, the used can keep track af all the execution of the game by looking at the new ontology generated with inferences. 
 
 ### System's limitations
+A system limitation could be that, in the inconsistent hypothesis, since the individuals are picked randomly to generate that type of hypothesis, it can happen that the same individuals could appear in the same hypothesis twice. And for instance if the hypothesis required four individuals and two of them are the same, uploading the hypothesis in the ontology and then performing the query, that hypothesis could appear as complete and consistent. 
 
 ### Possible technical improvements
-
-
+For sure an improvement will be use this code in a simulation environment, to see how the robot moves within the rooms of the cluedo house and for making things more realistic than reading the output only on a terminal (or smach_viewer).
 
 ## Author and contact
-Serena Paneri
-
-4506977
+Serena Paneri, 4506977
 
 s4506977@studenti.unige.it
